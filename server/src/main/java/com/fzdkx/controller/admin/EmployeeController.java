@@ -1,19 +1,28 @@
 package com.fzdkx.controller.admin;
 
-import com.fzdkx.constant.JwtConstant;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fzdkx.dto.EmployeeLoginDTO;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.properties.JwtProperties;
 import com.fzdkx.result.Result;
+import com.fzdkx.security.SecurityUser;
 import com.fzdkx.service.EmployeeService;
 import com.fzdkx.utils.JwtUtil;
 import com.fzdkx.vo.EmployeeLoginVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.apache.commons.lang.SystemUtils;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 
 /**
@@ -25,27 +34,31 @@ import java.util.Map;
 @Slf4j
 public class EmployeeController {
     @Resource
-    private JwtProperties jwtProperties;
-
+    private ObjectMapper objectMapper;
     @Resource
-    private EmployeeService employeeService;
-    @PostMapping("/employee/login")
-    public Result<EmployeeLoginVO> employeeLogin(@RequestBody EmployeeLoginDTO employeeLoginDTO){
-        // 根据用户名和密码从数据库中查询用户
-        Employee employee = employeeService.queryEmployee(employeeLoginDTO);
-        // 不报错，代表用户登录成功，为用户生成 jwt令牌
-        Map<String, Object> map = new HashMap<>();
-        map.put(JwtConstant.EMP_ID,employee.getId());
-        // 生成JWT令牌
-        String token = JwtUtil.createJWT(jwtProperties.getSecureKey(),
-                jwtProperties.getTtl(), map);
-        // 封装 EmployeeLoginVO对象
-        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
-                .id(employee.getId())
-                .name(employee.getName())
-                .username(employee.getUsername())
-                .token(token)
-                .build();
-        return Result.success(employeeLoginVO);
-    }
+    private AuthenticationManager authenticationManager;
+    @Resource
+    private JwtUtil jwtUtil;
+
+//    @PostMapping("/employee/login")
+//    public Result<EmployeeLoginVO> employeeLogin(@RequestBody EmployeeLoginDTO employeeLoginDTO) throws JsonProcessingException {
+//        String username = employeeLoginDTO.getUsername();
+//        String password = employeeLoginDTO.getPassword();
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//                new UsernamePasswordAuthenticationToken(username, password);
+//        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+//        SecurityContextHolder.getContext().setAuthentication(authenticate);
+//        SecurityUser securityUser =(SecurityUser) authenticate.getPrincipal();
+//        Employee employee = securityUser.getEmployee();
+//        // 通过 userDetails对象得到 用户信息 ,并转成json
+//        String userJson = objectMapper.writeValueAsString(securityUser.getEmployee());
+//        // 调用JWT工具类方法 ，将用户信息和权限信息传入，得到Token
+//        String token = jwtUtil.createToken(userJson,new ArrayList<>());
+//        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
+//                .name(employee.getName())
+//                .username(employee.getUsername())
+//                .id(employee.getId())
+//                .token(token).build();
+//        return Result.success(employeeLoginVO);
+//    }
 }

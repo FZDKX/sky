@@ -7,7 +7,12 @@ package com.fzdkx.constant;
  */
 public class MessageConstant {
     public static final String USER_NOT_FOUND = "账户不存在";
-    public static final String PASSWORD_ERROE = "密码错误";
+    public static final String PASSWORD_ERROR = "密码错误";
     public static final String USER_STATUS_LOCK = "用户状态被锁定";
+    public static final String LAYOUT_ERROR = "格式错误";
+    public static final String AUTHENTICATION_ERROR = "账户认证错误";
+    public static final String LOGOUT_ERROR = "退出失败，请安全退出";
+    public static final String TOKEN_VERIFY_ERROR = "token验证失败";
+    public static final String TOKEN_EXPIRE_ERROR = "token已过期";
 
 }

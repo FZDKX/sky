@@ -34,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 对前端的明文密码进行MD5加密
         String password = DigestUtils.md5DigestAsHex(employeeLoginDTO.getPassword().getBytes());
         if (!employee.getPassword().equals(password)){
-            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROE);
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
         // 如果账号密码都正确，那么对账户进行锁定判断
         if (employee.getStatus() == StatusConstant.USER_LOCK){

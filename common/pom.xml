@@ -34,8 +34,9 @@
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.5.0</version>
         </dependency>
         <!--支持配置属性类，yml文件中可以提示配置项-->
         <dependency>

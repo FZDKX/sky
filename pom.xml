@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.14</version>
+		<version>2.7.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.fzdkx</groupId>
@@ -34,6 +34,7 @@
 		<jjwt>0.9.1</jjwt>
 		<jaxb-api>2.3.1</jaxb-api>
 		<poi>3.16</poi>
+		<security>2.7.14</security>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -136,6 +137,11 @@
 				<groupId>com.github.wechatpay-apiv3</groupId>
 				<artifactId>wechatpay-apache-httpclient</artifactId>
 				<version>0.4.8</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+				<version>${security}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

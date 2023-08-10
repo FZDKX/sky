@@ -4,7 +4,11 @@ spring:
     url: jdbc:mysql://localhost:3306/sky_takeout?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: abc123
-
+  redis:
+    host: 192.168.3.166
+    port: 6379
+    database: 1
+    password: 123321
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.fzdkx.entity
