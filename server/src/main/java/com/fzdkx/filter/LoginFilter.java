@@ -1,4 +1,4 @@
-package com.fzdkx.security;
+package com.fzdkx.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fzdkx.constant.MessageConstant;
@@ -13,7 +13,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

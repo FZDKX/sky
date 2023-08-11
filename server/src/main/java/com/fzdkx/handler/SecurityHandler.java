@@ -1,9 +1,10 @@
-package com.fzdkx.security;
+package com.fzdkx.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.properties.JwtProperties;
 import com.fzdkx.result.Result;
+import com.fzdkx.security.SecurityUser;
 import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.utils.JwtUtil;
 import com.fzdkx.vo.EmployeeLoginVO;
@@ -121,7 +122,7 @@ public class SecurityHandler {
 
         // 判断
         Result result;
-        if (StringUtils.hasLength(token)){
+        if (!StringUtils.hasLength(token)){
             result = Result.error(LOGOUT_ERROR);
         }else {
             // 删除Redis中的Token

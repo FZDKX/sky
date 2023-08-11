@@ -1,6 +1,6 @@
 package com.fzdkx.config;
 
-import com.fzdkx.TokenInterceptor;
+import com.fzdkx.interceptor.ThreadLocalInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -52,9 +52,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     }
 
     @Override
-    // 注册拦截器，对ThreadLocal进行 remove
+    // ThreadLocal拦截器，对ThreadLocal进行 remove
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor())
+        registry.addInterceptor(new ThreadLocalInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/admin/employee/login");
     }

@@ -18,5 +18,5 @@ mybatis:
 
 jwt:
   secureKey: dihdiosahdskandioadhuisadhd
-  ttl: 7200
+  ttl: 2
   tokenName: token

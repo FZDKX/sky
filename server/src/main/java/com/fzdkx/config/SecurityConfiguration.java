@@ -1,8 +1,8 @@
 package com.fzdkx.config;
 
-import com.fzdkx.security.LoginFilter;
-import com.fzdkx.security.SecurityHandler;
-import com.fzdkx.security.TokenFilter;
+import com.fzdkx.filter.LoginFilter;
+import com.fzdkx.handler.SecurityHandler;
+import com.fzdkx.filter.TokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import javax.annotation.Resource;
 
@@ -39,17 +40,22 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity http ,LoginFilter loginFilter) throws Exception {
         // 向过滤器链中添加自定义登录过滤器
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(tokenFilter, LoginFilter.class);
+        http.addFilterBefore(tokenFilter, LogoutFilter.class);
 
-        http.formLogin().disable();
+
 
         // 禁止跨域请求保护 及 session
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         // 授权请求，允许登录请求
         http.authorizeRequests()
                 .antMatchers("/admin/employee/login").permitAll()
                 .anyRequest().authenticated();
+
+        http.logout().logoutUrl("/admin/employee/logout")
+                .logoutSuccessHandler(securityHandler::logoutSuccess);
+
         // 配置过滤器与处理器
         return http.build();
     }

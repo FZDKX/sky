@@ -14,5 +14,6 @@ public class MessageConstant {
     public static final String LOGOUT_ERROR = "退出失败，请安全退出";
     public static final String TOKEN_VERIFY_ERROR = "token验证失败";
     public static final String TOKEN_EXPIRE_ERROR = "token已过期";
+    public static final String TOKEN_NOT_FOUNT = "token未携带";
 
 }
