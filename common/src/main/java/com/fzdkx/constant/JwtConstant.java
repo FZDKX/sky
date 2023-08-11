@@ -6,5 +6,6 @@ package com.fzdkx.constant;
  * JWT相关常量类
  */
 public class JwtConstant {
-    public static final String EMP_ID = "empId";
+    public static final String TOKEN_USERNAME = "username";
+    public static final String TOKEN_ID = "id";
 }

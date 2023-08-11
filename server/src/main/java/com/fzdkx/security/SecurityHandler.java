@@ -1,10 +1,14 @@
 package com.fzdkx.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fzdkx.entity.Employee;
 import com.fzdkx.properties.JwtProperties;
 import com.fzdkx.result.Result;
+import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.utils.JwtUtil;
+import com.fzdkx.vo.EmployeeLoginVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -19,9 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.fzdkx.constant.JwtConstant.TOKEN_ID;
+import static com.fzdkx.constant.JwtConstant.TOKEN_USERNAME;
 import static com.fzdkx.constant.MessageConstant.*;
 import static com.fzdkx.constant.RedisConstant.REDIS_TOKEN_PRE;
 
@@ -52,23 +60,30 @@ public class SecurityHandler {
             throws IOException {
         // 设置响应格式及编码格式
         response.setContentType("application/json;charset=utf-8");
+
         // 通过authentication 得到 UserDetails对象
         SecurityUser securityUser =(SecurityUser) authentication.getPrincipal();
-        // 通过 userDetails对象得到 用户信息 ,并转成json
-        String userJson = objectMapper.writeValueAsString(securityUser.getEmployee());
-        // 调用JWT工具类方法 ，将用户信息和权限信息传入，得到Token
-        String token = jwtUtil.createToken(userJson,new ArrayList<>());
-        // 将Token添加到Redis中 ，Key中携带Token ，value为用户名
-        template.opsForValue().set(REDIS_TOKEN_PRE+securityUser.getUsername(), token,2, TimeUnit.HOURS);
-        // 将Token转为Json数据
-        String json = objectMapper.writeValueAsString(Result.success(token));
-        PrintWriter out = response.getWriter();
-        // 返回json数据
-        out.write(json);
-        // 刷新
-        out.flush();
-        // 关闭流
-        out.close();
+
+        // 封装 jwt map
+        Employee employee = securityUser.getEmployee();
+        Map<String, String> map = new HashMap<>();
+        map.put(TOKEN_USERNAME, employee.getUsername());
+        map.put(TOKEN_ID, employee.getId().toString());
+
+        // 得到Token
+        String token = jwtUtil.createToken(map);
+
+        // 将Token添加到Redis中
+        template.opsForValue().set(REDIS_TOKEN_PRE+securityUser.getId(),
+                                    token,jwtProperties.getTtl(), TimeUnit.HOURS);
+
+        // 封装响应对象
+        EmployeeLoginVO employeeLoginVO = new EmployeeLoginVO();
+        BeanUtils.copyProperties(employee, employeeLoginVO);
+        employeeLoginVO.setToken(token);
+
+        // 将employeeLoginVO响应给前端
+        write(response.getWriter(),Result.success(employeeLoginVO));
     }
 
     // 认证失败处理器
@@ -78,6 +93,7 @@ public class SecurityHandler {
             throws IOException {
         // 设置响应格式 及其 编码
         response.setContentType("application/json;charset=utf-8");
+
         Result<String> result = null;
         // 根据错误异常，填写响应对象的错误信息
         if(exception instanceof UsernameNotFoundException){
@@ -85,15 +101,9 @@ public class SecurityHandler {
         }else if (exception instanceof AuthenticationServiceException){
             result = Result.error(AUTHENTICATION_ERROR);
         }
-        // 将对象转为json
-        String json = objectMapper.writeValueAsString(result);
-        PrintWriter out = response.getWriter();
-        // 返回json数据
-        out.write(json);
-        // 刷新
-        out.flush();
-        // 关闭流
-        out.close();
+
+        // 响应
+        write(response.getWriter(),result);
     }
 
 
@@ -105,18 +115,25 @@ public class SecurityHandler {
             throws IOException, ServletException {
         // 设置 响应格式 及其 编码
         response.setContentType("application/json;charset=utf-8");
-        PrintWriter out = response.getWriter();
+
         // 获取用户携带的Token
         String token = request.getHeader(jwtProperties.getTokenName());
-        String json;
+
+        // 判断
+        Result result;
         if (StringUtils.hasLength(token)){
-            json = objectMapper.writeValueAsString(Result.error(LOGOUT_ERROR));
+            result = Result.error(LOGOUT_ERROR);
         }else {
             // 删除Redis中的Token
-            template.delete("token:"+token);
+            template.delete("token:" + IdThreadLocal.getId());
             // 获取响应对象的json格式数据
-            json = objectMapper.writeValueAsString(Result.success("退出成功"));
+            result = Result.success("退出成功");
         }
+        write(response.getWriter(),result);
+    }
+
+    private void write(Writer out , Result result) throws IOException {
+        String json = objectMapper.writeValueAsString(result);
         // 返回json数据
         out.write(json);
         // 刷新

@@ -1,9 +1,12 @@
 package com.fzdkx.security;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.exception.TokenErrorException;
 import com.fzdkx.properties.JwtProperties;
+import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.utils.JwtUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.fzdkx.constant.JwtConstant.TOKEN_ID;
 import static com.fzdkx.constant.MessageConstant.*;
 import static com.fzdkx.constant.RedisConstant.REDIS_TOKEN_PRE;
 
@@ -55,24 +59,26 @@ public class TokenFilter extends OncePerRequestFilter {
         if (!StringUtils.hasLength(token)) {
             throw new AuthenticationException(AUTHENTICATION_ERROR);
         }
-        String userInfo;
+        DecodedJWT verify;
         try {
             // 验签
-            userInfo = jwtUtil.getUserInfo(token);
+            verify = jwtUtil.verify(token);
         } catch (Exception e) {
             throw new TokenErrorException(TOKEN_VERIFY_ERROR);
         }
-        Employee employee = objectMapper.readValue(userInfo, Employee.class);
+        long id = Long.parseLong(verify.getClaim(TOKEN_ID).toString()) ;
+
         // redis验证
-        String redisToken = template.opsForValue().get(REDIS_TOKEN_PRE + employee.getUsername());
+        String redisToken = template.opsForValue().get(REDIS_TOKEN_PRE + id);
         if (!StringUtils.hasLength(redisToken)) {
             throw new TokenErrorException(TOKEN_EXPIRE_ERROR);
         }
         if (redisToken.equals(token)) {
             throw new TokenErrorException(TOKEN_VERIFY_ERROR);
         }
+        IdThreadLocal.setId(id);
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(employee, null, null);
+                new UsernamePasswordAuthenticationToken(id, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request,response);
     }

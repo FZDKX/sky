@@ -1,7 +1,6 @@
 package com.fzdkx.security;
 
 import com.fzdkx.entity.Employee;
-import com.fzdkx.mapper.EmployeeMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -57,5 +56,9 @@ public class SecurityUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getId(){
+        return employee.getId();
     }
 }
