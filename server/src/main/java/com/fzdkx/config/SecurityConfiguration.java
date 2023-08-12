@@ -40,7 +40,7 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity http ,LoginFilter loginFilter) throws Exception {
         // 向过滤器链中添加自定义登录过滤器
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(tokenFilter, LogoutFilter.class);
+        http.addFilterBefore(tokenFilter,LogoutFilter .class);
 
 
 
@@ -51,6 +51,11 @@ public class SecurityConfiguration{
         // 授权请求，允许登录请求
         http.authorizeRequests()
                 .antMatchers("/admin/employee/login").permitAll()
+                .antMatchers("/doc.html/**").permitAll()
+                .antMatchers("/swagger-ui.html").anonymous()
+                .antMatchers("/v2/**").anonymous()
+                .antMatchers("/swagger-resources/**").anonymous()
+                .antMatchers("/webjars/**").anonymous()
                 .anyRequest().authenticated();
 
         http.logout().logoutUrl("/admin/employee/logout")

@@ -1,6 +1,5 @@
 package com.fzdkx.mapper;
 
-import com.fzdkx.dto.EmployeeLoginDTO;
 import com.fzdkx.entity.Employee;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,5 +8,7 @@ import org.apache.ibatis.annotations.Param;
  * @create 2023/8/10 14:45
  */
 public interface EmployeeMapper {
-    Employee getEmployee(@Param("username") String username);
+    Employee selectEmployeeByName(@Param("username") String username);
+
+    void insertEmployee(Employee employee);
 }

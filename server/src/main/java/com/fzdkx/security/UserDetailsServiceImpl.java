@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     // 用于和LoginFilter中接收的前端传入的 用户名和密码进行比较
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeMapper.getEmployee(username);
+        Employee employee = employeeMapper.selectEmployeeByName(username);
         // 账户为空
         if (employee == null){
             throw new UserNotFoundException(MessageConstant.USER_NOT_FOUND);

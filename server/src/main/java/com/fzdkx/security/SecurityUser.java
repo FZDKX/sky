@@ -1,5 +1,6 @@
 package com.fzdkx.security;
 
+import com.fzdkx.constant.SqlConstant;
 import com.fzdkx.entity.Employee;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,7 +46,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return employee.getStatus() == 1;
+        return employee.getStatus() == SqlConstant.DEFAULT_STATUS;
     }
 
     @Override

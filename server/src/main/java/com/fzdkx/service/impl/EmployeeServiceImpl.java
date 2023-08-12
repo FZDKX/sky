@@ -1,18 +1,21 @@
 package com.fzdkx.service.impl;
 
-import com.fzdkx.constant.MessageConstant;
-import com.fzdkx.constant.StatusConstant;
-import com.fzdkx.exception.PasswordErrorException;
-import com.fzdkx.exception.UserNotFoundException;
-import com.fzdkx.dto.EmployeeLoginDTO;
+import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.entity.Employee;
-import com.fzdkx.exception.UserStatusLockException;
+import com.fzdkx.exception.InsertException;
 import com.fzdkx.mapper.EmployeeMapper;
 import com.fzdkx.service.EmployeeService;
+import com.fzdkx.utils.IdThreadLocal;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+
+import static com.fzdkx.constant.MessageConstant.SQL_INSERT_ERROR;
+import static com.fzdkx.constant.SqlConstant.DEFAULT_PASSWORD;
+import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
 /**
  * @author 发着呆看星
@@ -22,24 +25,24 @@ import javax.annotation.Resource;
 public class EmployeeServiceImpl implements EmployeeService {
     @Resource
     private EmployeeMapper employeeMapper;
+    @Resource
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     @Override
-    public Employee queryEmployee(EmployeeLoginDTO employeeLoginDTO) {
-        // 根据用户名查询用户
-        Employee employee = employeeMapper.getEmployee(employeeLoginDTO.getUsername());
-        if (employee == null){
-            throw new UserNotFoundException(MessageConstant.USER_NOT_FOUND);
+    public void addEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = Employee.builder()
+                .status(DEFAULT_STATUS)
+                .password(passwordEncoder.encode(DEFAULT_PASSWORD))
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .createUser(IdThreadLocal.getId())
+                .updateUser(IdThreadLocal.getId()).build();
+        BeanUtils.copyProperties(employeeDTO,employee);
+        try {
+            employeeMapper.insertEmployee(employee);
+        } catch (Exception e) {
+            throw new InsertException(SQL_INSERT_ERROR);
         }
-        // 如果账户存在，就比对密码是否正确
-        // 对前端的明文密码进行MD5加密
-        String password = DigestUtils.md5DigestAsHex(employeeLoginDTO.getPassword().getBytes());
-        if (!employee.getPassword().equals(password)){
-            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
-        }
-        // 如果账号密码都正确，那么对账户进行锁定判断
-        if (employee.getStatus() == StatusConstant.USER_LOCK){
-            throw new UserStatusLockException(MessageConstant.USER_STATUS_LOCK);
-        }
-        return employee;
     }
 }

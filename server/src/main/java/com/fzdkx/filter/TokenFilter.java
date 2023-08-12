@@ -43,8 +43,15 @@ public class TokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        String substring = requestURI.substring(0, 8);
         // 过滤请求URI
-        if (request.getRequestURI().equals("/admin/employee/login")) {
+        if (requestURI.equals("/admin/employee/login")
+            || requestURI.contains("/doc.html")
+            || requestURI.contains("/webjars/")
+            || requestURI.contains("/swagger")
+            || requestURI.contains("/favicon")
+            || requestURI.contains("/v2")) {
             filterChain.doFilter(request, response);
             return;
         }

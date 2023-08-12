@@ -1,5 +1,6 @@
 package com.fzdkx.result;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * @param <T>
  */
 @Data
+@ApiModel(description = "同一返回格式")
 public class Result<T> implements Serializable {
 
     private Integer code; //编码：1成功，0和其它数字为失败

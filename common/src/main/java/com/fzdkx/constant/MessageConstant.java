@@ -15,5 +15,6 @@ public class MessageConstant {
     public static final String TOKEN_VERIFY_ERROR = "token验证失败";
     public static final String TOKEN_EXPIRE_ERROR = "token已过期";
     public static final String TOKEN_NOT_FOUNT = "token未携带";
+    public static final String SQL_INSERT_ERROR = "sql插入异常";
 
 }

@@ -34,7 +34,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .apiInfo(apiInfo)
                 .select()
                  // 扫描哪些包下的接口
-                .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.fzdkx.controller"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;
@@ -56,6 +56,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ThreadLocalInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/admin/employee/login");
+                .excludePathPatterns("/admin/employee/login","/doc.html");
     }
 }
