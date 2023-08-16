@@ -1,16 +1,23 @@
-package com.fzdkx.dto;
+package com.fzdkx.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 发着呆看星
- * @create 2023/8/12 9:19
+ * @create 2023/8/16 12:01
+ * 修改员工信息数据模型
  */
+@ApiModel(description = "修改员工信息数据模型")
 @Data
-@ApiModel(description = "新增或修改员工的数据模型")
-public class EmployeeDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeEditVO {
+    @ApiModelProperty("ID")
+    private Long id;
     @ApiModelProperty("身份证")
     private String idNumber;
     @ApiModelProperty("员工姓名")

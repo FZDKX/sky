@@ -1,6 +1,10 @@
 package com.fzdkx.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fzdkx.constant.MessageConstant;
+import com.fzdkx.exception.TokenErrorException;
+import com.fzdkx.exception.TokenNotFoundException;
 import com.fzdkx.properties.JwtProperties;
 import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.utils.JwtUtil;
@@ -11,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
@@ -59,28 +64,24 @@ public class TokenFilter extends OncePerRequestFilter {
         String token = request.getHeader(jwtProperties.getTokenName());
         // token空判断
         if (!StringUtils.hasLength(token)) {
-            log.error(TOKEN_NOT_FOUNT);
-            return;
+            throw new TokenNotFoundException(TOKEN_NOT_FOUNT);
         }
         DecodedJWT verify;
         try {
             // 验签
             verify = jwtUtil.verify(token);
         } catch (Exception e) {
-            log.error(TOKEN_VERIFY_ERROR);
-            return;
+            throw new TokenErrorException(TOKEN_VERIFY_ERROR);
         }
         long id = Long.parseLong(verify.getClaim(TOKEN_ID).asString()) ;
 
         // redis验证
         String redisToken = template.opsForValue().get(REDIS_TOKEN_PRE + id);
         if (!StringUtils.hasLength(redisToken)) {
-            log.error(TOKEN_EXPIRE_ERROR);
-            return;
+            throw new TokenExpiredException(TOKEN_EXPIRE_ERROR);
         }
         if (!redisToken.equals(token)) {
-            log.error(TOKEN_VERIFY_ERROR);
-            return;
+            throw new TokenErrorException(TOKEN_VERIFY_ERROR);
         }
         IdThreadLocal.setId(id);
         UsernamePasswordAuthenticationToken authenticationToken =

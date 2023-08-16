@@ -1,8 +1,12 @@
 package com.fzdkx.config;
 
 import com.fzdkx.interceptor.ThreadLocalInterceptor;
+import com.fzdkx.json.JacksonObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -12,6 +16,8 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import java.util.List;
 
 /**
  * @author 发着呆看星
@@ -57,5 +63,15 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(new ThreadLocalInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/admin/employee/login","/doc.html");
+    }
+
+    @Override
+    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // 创建一个消息转换器对象
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        // 为消息转换器对象设置一个对象转换器 序列化与反序列化
+        converter.setObjectMapper(new JacksonObjectMapper());
+        // 将自己的消息转换器添入容器
+        converters.add(0,converter);
     }
 }
