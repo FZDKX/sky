@@ -1,5 +1,6 @@
 package com.fzdkx.service;
 
+import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
@@ -23,4 +24,7 @@ public interface EmployeeService {
     void editEmployeeInfo(Employee employee);
 
     EmployeeEditVO queryEmployeeById(Long id);
+
+    void editEmployeePassword(EditEmployeePasswordDTO editEmployeePasswordDTO);
+
 }

@@ -1,9 +1,11 @@
 package com.fzdkx.service.impl;
 
+import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.exception.InsertException;
+import com.fzdkx.exception.PasswordErrorException;
 import com.fzdkx.exception.SqlException;
 import com.fzdkx.mapper.EmployeeMapper;
 import com.fzdkx.result.PageResult;
@@ -17,6 +19,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -93,6 +96,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeEditVO queryEmployeeById(Long id) {
         return employeeMapper.selectEmployeeById(id);
+    }
+
+    @Override
+    public void editEmployeePassword(EditEmployeePasswordDTO employeePasswordDTO) {
+        Long id = IdThreadLocal.getId();
+        String encodePassword = employeeMapper.selectEmployeePasswordById(id);
+        if (!StringUtils.hasLength(encodePassword)){
+            throw new PasswordErrorException("找不到当前用户密码");
+        }
+        boolean flag = passwordEncoder.matches(employeePasswordDTO.getOldPassword(), encodePassword);
+        if (!flag){
+           throw new PasswordErrorException("原密码错误");
+        }
+        String newEncodePassword = passwordEncoder.encode(employeePasswordDTO.getNewPassword());
+        employeeMapper.updateEmployeePassword(newEncodePassword,id);
     }
 
 }

@@ -49,7 +49,6 @@ public class TokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        String substring = requestURI.substring(0, 8);
         // 过滤请求URI
         if (requestURI.equals("/admin/employee/login")
             || requestURI.contains("/doc.html")

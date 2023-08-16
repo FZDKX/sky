@@ -1,5 +1,6 @@
 package com.fzdkx.controller.admin;
 
+import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
@@ -57,5 +58,11 @@ public class EmployeeController {
     public Result<EmployeeEditVO> queryEmployeeById(@PathVariable("id") Long id){
         EmployeeEditVO employeeEditVO = employeeService.queryEmployeeById(id);
         return Result.success(employeeEditVO);
+    }
+
+    @PutMapping("/employee/editPassword")
+    public Result editEmployeePassword(@RequestBody EditEmployeePasswordDTO editEmployeePasswordDTO){
+        employeeService.editEmployeePassword(editEmployeePasswordDTO);
+        return Result.success();
     }
 }

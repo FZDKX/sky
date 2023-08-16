@@ -41,6 +41,11 @@
         </set>
         where id = #{id}
     </update>
+    <update id="updateEmployeePassword">
+        update employee
+        set password = #{newPassword}
+        where id = #{id}
+    </update>
 
     <select id="selectEmployeeByName" resultType="employee">
         select * from employee where username = #{username}
@@ -58,5 +63,10 @@
         select id , name , username ,phone , id_number , sex
         from employee
         where id = #{id}
+    </select>
+    <select id="selectEmployeePasswordById" resultType="string">
+        select password
+        from employee
+        where id = #{empId}
     </select>
 </mapper>
