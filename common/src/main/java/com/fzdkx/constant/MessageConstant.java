@@ -15,6 +15,11 @@ public class MessageConstant {
     public static final String TOKEN_VERIFY_ERROR = "token验证失败";
     public static final String TOKEN_EXPIRE_ERROR = "token已过期";
     public static final String TOKEN_NOT_FOUNT = "token未携带";
-    public static final String SQL_INSERT_ERROR = "sql插入异常";
-
+    public static final String SQL_EMPLOYEE_INSERT_ERROR = "添加员工错误";
+    public static final String SQL_EMPLOYEE_UPDATE_ERROR = "员工信息修改错误";
+    public static final String SQL_EMPLOYEE_PASSWORD_ERROR = "原密码错误";
+    public static final String SQL_CATEGORY_SELECT_ERROR = "分类分页查询失败";
+    public static final String SQL_CATEGORY_UPDATE_ERROR = "分类信息修改失败";
+    public static final String SQL_CATEGORY_DELETE_ERROR = "分类删除失败";
+    public static final String SQL_CATEGORY_INSERT_ERROR = "分类(套餐)添加失败";
 }

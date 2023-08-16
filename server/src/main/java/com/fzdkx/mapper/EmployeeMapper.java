@@ -22,14 +22,9 @@ public interface EmployeeMapper {
 
     List<EmployeePageQueryVO> pageSelectEmployee(EmployeePageQueryDTO employeePageQueryDTO);
 
-    void updateEmployeeStatusById(@Param("status") Integer status,@Param("id") Integer id);
-
-    void updateEmployeeInfo(Employee employee);
-
     EmployeeEditVO selectEmployeeById(Long id);
 
     String selectEmployeePasswordById(@Param("empId") Long empId);
 
-    void updateEmployeePassword(@Param("newPassword") String newEncodePassword,@Param("id") Long id);
-
+    void updateEmployee(Employee employee);
 }

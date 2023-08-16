@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fzdkx.constant.MessageConstant.SQL_INSERT_ERROR;
+import static com.fzdkx.constant.MessageConstant.*;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_PASSWORD;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
@@ -42,7 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public Result addEmployee(EmployeeDTO employeeDTO) {
+    public void addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = Employee.builder()
                 .status(DEFAULT_STATUS)
                 .password(passwordEncoder.encode(DEFAULT_PASSWORD))
@@ -54,9 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             employeeMapper.insertEmployee(employee);
         } catch (Exception e) {
-            throw new InsertException(SQL_INSERT_ERROR);
+            throw new InsertException(SQL_EMPLOYEE_INSERT_ERROR);
         }
-        return Result.success();
     }
 
     @Override
@@ -76,20 +75,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Result changeStatus(Integer status, Integer id) {
+    public void changeStatus(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .updateTime(LocalDateTime.now())
+                .updateUser(IdThreadLocal.getId())
+                .status(status)
+                .id(id)
+                .build();
         try {
-            employeeMapper.updateEmployeeStatusById(status, id);
+            employeeMapper.updateEmployee(employee);
         } catch (RuntimeException e) {
-            throw new SqlException("sql执行异常");
+            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
         }
-        return Result.success();
     }
 
     @Override
     public void editEmployeeInfo(Employee employee) {
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(IdThreadLocal.getId());
-        employeeMapper.updateEmployeeInfo(employee);
+        try {
+            employee.setUpdateTime(LocalDateTime.now());
+            employee.setUpdateUser(IdThreadLocal.getId());
+            employeeMapper.updateEmployee(employee);
+        } catch (Exception e) {
+            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
+        }
 
     }
 
@@ -102,15 +110,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void editEmployeePassword(EditEmployeePasswordDTO employeePasswordDTO) {
         Long id = IdThreadLocal.getId();
         String encodePassword = employeeMapper.selectEmployeePasswordById(id);
-        if (!StringUtils.hasLength(encodePassword)){
-            throw new PasswordErrorException("找不到当前用户密码");
-        }
         boolean flag = passwordEncoder.matches(employeePasswordDTO.getOldPassword(), encodePassword);
         if (!flag){
-           throw new PasswordErrorException("原密码错误");
+           throw new PasswordErrorException(SQL_EMPLOYEE_PASSWORD_ERROR);
         }
         String newEncodePassword = passwordEncoder.encode(employeePasswordDTO.getNewPassword());
-        employeeMapper.updateEmployeePassword(newEncodePassword,id);
+        Employee employee = Employee.builder()
+                                    .id(id)
+                                    .updateUser(id)
+                                    .updateTime(LocalDateTime.now())
+                                    .password(newEncodePassword).build();
+        BeanUtils.copyProperties(employeePasswordDTO,employee);
+
+        try {
+            employeeMapper.updateEmployee(employee);
+        } catch (Exception e) {
+            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
+        }
     }
 
 }

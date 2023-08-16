@@ -14,17 +14,34 @@ import com.fzdkx.vo.EmployeePageQueryVO;
  * @create 2023/8/10 16:15
  */
 public interface EmployeeService {
+    /**
+     * 添加员工信息
+     */
+    void addEmployee(EmployeeDTO employeeDTO);
 
-    Result addEmployee(EmployeeDTO employeeDTO);
-
+    /**
+     * 分页查询员工信息
+     */
     PageResult<EmployeePageQueryVO> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
-    Result changeStatus(Integer status, Integer id);
+    /**
+     * 修改员工状态
+     */
+    void changeStatus(Integer status, Long id);
 
+    /**
+     * 修改员工信息
+     */
     void editEmployeeInfo(Employee employee);
 
+    /**
+     * 根据ID查询员工信息
+     */
     EmployeeEditVO queryEmployeeById(Long id);
 
+    /**
+     * 修改员工密码
+     */
     void editEmployeePassword(EditEmployeePasswordDTO editEmployeePasswordDTO);
 
 }

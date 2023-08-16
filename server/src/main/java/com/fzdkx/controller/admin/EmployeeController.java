@@ -31,37 +31,39 @@ public class EmployeeController {
 
     @ApiOperation("添加员工")
     @PostMapping("/employee")
-    public Result saveEmployee(@RequestBody EmployeeDTO employeeDTO){
-        return employeeService.addEmployee(employeeDTO);
+    public Result saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.addEmployee(employeeDTO);
+        return Result.success();
     }
 
     @ApiOperation("员工分页查询")
     @GetMapping("/employee/page")
-    public Result<PageResult<EmployeePageQueryVO>> pageQueryEmployee(EmployeePageQueryDTO employeePageQueryDTO){
+    public Result<PageResult<EmployeePageQueryVO>> pageQueryEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
         PageResult<EmployeePageQueryVO> pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
 
     @ApiOperation("改变员工账号状态")
     @PostMapping("/employee/status/{status}")
-    public Result changeStatus(@PathVariable("status") Integer status , Integer id){
-        return employeeService.changeStatus(status,id);
+    public Result changeStatus(@PathVariable("status") Integer status, Long id) {
+        employeeService.changeStatus(status, id);
+        return Result.success();
     }
 
     @PutMapping("/employee")
-    public Result editEmployeeInfo(@RequestBody Employee employee){
+    public Result editEmployeeInfo(@RequestBody Employee employee) {
         employeeService.editEmployeeInfo(employee);
         return Result.success();
     }
 
     @GetMapping("/employee/{id}")
-    public Result<EmployeeEditVO> queryEmployeeById(@PathVariable("id") Long id){
+    public Result<EmployeeEditVO> queryEmployeeById(@PathVariable("id") Long id) {
         EmployeeEditVO employeeEditVO = employeeService.queryEmployeeById(id);
         return Result.success(employeeEditVO);
     }
 
     @PutMapping("/employee/editPassword")
-    public Result editEmployeePassword(@RequestBody EditEmployeePasswordDTO editEmployeePasswordDTO){
+    public Result editEmployeePassword(@RequestBody EditEmployeePasswordDTO editEmployeePasswordDTO) {
         employeeService.editEmployeePassword(editEmployeePasswordDTO);
         return Result.success();
     }
