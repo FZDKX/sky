@@ -16,7 +16,13 @@ mybatis:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-jwt:
-  secureKey: dihdiosahdskandioadhuisadhd
-  ttl: 2
-  tokenName: token
+sky:
+  jwt:
+    secure-key: dihdiosahdskandioadhuisadhd
+    ttl: 2
+    token-name: token
+  oos:
+    endpoint: oss-cn-heyuan.aliyuncs.com
+    access-key-id: LTAI5tB3NTWMoKZcXmdLXXBq
+    access-key-secret: s7m09hFzGIJsfAMmRaCOJMGxhUy6R6
+    bucket-name: fzdkx-sky

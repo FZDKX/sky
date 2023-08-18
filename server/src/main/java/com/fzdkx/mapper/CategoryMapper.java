@@ -1,5 +1,7 @@
 package com.fzdkx.mapper;
 
+import com.fzdkx.annotion.AutoFill;
+import com.fzdkx.constant.AutoFillType;
 import com.fzdkx.dto.CategoryDTO;
 import com.fzdkx.dto.CategoryPageQueryDTO;
 import com.fzdkx.entity.Category;
@@ -17,7 +19,11 @@ public interface CategoryMapper {
 
     void deleteCategory(@Param("id") Integer id);
 
+    @AutoFill(AutoFillType.UPDATE)
     void updateCategory(Category category);
 
+    @AutoFill(AutoFillType.INSERT)
     void insertCategory(Category category);
+
+    List<Category> selectCategoryList(@Param("type") Integer type);
 }

@@ -3,6 +3,9 @@ package com.fzdkx.config;
 import com.fzdkx.filter.LoginFilter;
 import com.fzdkx.handler.SecurityHandler;
 import com.fzdkx.filter.TokenFilter;
+import com.fzdkx.properties.JwtProperties;
+import com.fzdkx.utils.JwtUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -78,4 +81,5 @@ public class SecurityConfiguration{
         loginFilter.setAuthenticationFailureHandler(securityHandler::loginFail);
         return loginFilter;
     }
+
 }

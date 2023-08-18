@@ -2,7 +2,6 @@ package com.fzdkx.filter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fzdkx.constant.MessageConstant;
 import com.fzdkx.exception.TokenErrorException;
 import com.fzdkx.exception.TokenNotFoundException;
 import com.fzdkx.properties.JwtProperties;
@@ -15,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;

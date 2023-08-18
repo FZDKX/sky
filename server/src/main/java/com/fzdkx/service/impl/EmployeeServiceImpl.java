@@ -4,12 +4,9 @@ import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
-import com.fzdkx.exception.InsertException;
 import com.fzdkx.exception.PasswordErrorException;
-import com.fzdkx.exception.SqlException;
 import com.fzdkx.mapper.EmployeeMapper;
 import com.fzdkx.result.PageResult;
-import com.fzdkx.result.Result;
 import com.fzdkx.service.EmployeeService;
 import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.vo.EmployeeEditVO;
@@ -19,13 +16,11 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fzdkx.constant.MessageConstant.*;
+import static com.fzdkx.constant.MessageConstant.SQL_EMPLOYEE_PASSWORD_ERROR;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_PASSWORD;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
@@ -45,17 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = Employee.builder()
                 .status(DEFAULT_STATUS)
-                .password(passwordEncoder.encode(DEFAULT_PASSWORD))
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .createUser(IdThreadLocal.getId())
-                .updateUser(IdThreadLocal.getId()).build();
+                .password(passwordEncoder.encode(DEFAULT_PASSWORD)).build();
         BeanUtils.copyProperties(employeeDTO, employee);
-        try {
-            employeeMapper.insertEmployee(employee);
-        } catch (Exception e) {
-            throw new InsertException(SQL_EMPLOYEE_INSERT_ERROR);
-        }
+        employeeMapper.insertEmployee(employee);
     }
 
     @Override
@@ -77,28 +64,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void changeStatus(Integer status, Long id) {
         Employee employee = Employee.builder()
-                .updateTime(LocalDateTime.now())
-                .updateUser(IdThreadLocal.getId())
                 .status(status)
                 .id(id)
                 .build();
-        try {
-            employeeMapper.updateEmployee(employee);
-        } catch (RuntimeException e) {
-            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
-        }
+        employeeMapper.updateEmployee(employee);
     }
 
     @Override
     public void editEmployeeInfo(Employee employee) {
-        try {
-            employee.setUpdateTime(LocalDateTime.now());
-            employee.setUpdateUser(IdThreadLocal.getId());
-            employeeMapper.updateEmployee(employee);
-        } catch (Exception e) {
-            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
-        }
-
+        employeeMapper.updateEmployee(employee);
     }
 
     @Override
@@ -111,22 +85,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long id = IdThreadLocal.getId();
         String encodePassword = employeeMapper.selectEmployeePasswordById(id);
         boolean flag = passwordEncoder.matches(employeePasswordDTO.getOldPassword(), encodePassword);
-        if (!flag){
-           throw new PasswordErrorException(SQL_EMPLOYEE_PASSWORD_ERROR);
+        if (!flag) {
+            throw new PasswordErrorException(SQL_EMPLOYEE_PASSWORD_ERROR);
         }
         String newEncodePassword = passwordEncoder.encode(employeePasswordDTO.getNewPassword());
         Employee employee = Employee.builder()
-                                    .id(id)
-                                    .updateUser(id)
-                                    .updateTime(LocalDateTime.now())
-                                    .password(newEncodePassword).build();
-        BeanUtils.copyProperties(employeePasswordDTO,employee);
-
-        try {
-            employeeMapper.updateEmployee(employee);
-        } catch (Exception e) {
-            throw new SqlException(SQL_EMPLOYEE_UPDATE_ERROR);
-        }
+                .id(id)
+                .password(newEncodePassword).build();
+        BeanUtils.copyProperties(employeePasswordDTO, employee);
+        employeeMapper.updateEmployee(employee);
     }
 
 }

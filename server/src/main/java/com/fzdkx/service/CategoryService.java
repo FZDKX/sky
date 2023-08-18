@@ -5,6 +5,8 @@ import com.fzdkx.dto.CategoryPageQueryDTO;
 import com.fzdkx.entity.Category;
 import com.fzdkx.result.PageResult;
 
+import java.util.List;
+
 /**
  * @author 发着呆看星
  * @create 2023/8/16 17:53
@@ -35,4 +37,8 @@ public interface CategoryService {
      */
     void saveCategory(CategoryDTO categoryDTO);
 
+    /**
+     * 根据类型查询分类集合
+     */
+    List<Category> queryCategoryList(Integer type);
 }

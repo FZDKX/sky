@@ -1,5 +1,7 @@
 package com.fzdkx.mapper;
 
+import com.fzdkx.annotion.AutoFill;
+import com.fzdkx.constant.AutoFillType;
 import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
@@ -18,6 +20,7 @@ import java.util.List;
 public interface EmployeeMapper {
     Employee selectEmployeeByName(@Param("username") String username);
 
+    @AutoFill(AutoFillType.INSERT)
     void insertEmployee(Employee employee);
 
     List<EmployeePageQueryVO> pageSelectEmployee(EmployeePageQueryDTO employeePageQueryDTO);
@@ -26,5 +29,6 @@ public interface EmployeeMapper {
 
     String selectEmployeePasswordById(@Param("empId") Long empId);
 
+    @AutoFill(AutoFillType.UPDATE)
     void updateEmployee(Employee employee);
 }
