@@ -4,7 +4,10 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fzdkx.exception.TokenErrorException;
 import com.fzdkx.exception.TokenNotFoundException;
+import com.fzdkx.handler.SecurityHandler;
 import com.fzdkx.properties.JwtProperties;
+import com.fzdkx.result.Result;
+import com.fzdkx.security.SecurityUser;
 import com.fzdkx.utils.IdThreadLocal;
 import com.fzdkx.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +43,8 @@ public class TokenFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
     @Resource
     private StringRedisTemplate template;
-
+    @Resource
+    private SecurityHandler securityHandler;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -57,28 +61,41 @@ public class TokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        response.setContentType("application/json;charset=utf-8");
         // 获取请求头中的token
         String token = request.getHeader(jwtProperties.getTokenName());
         // token空判断
         if (!StringUtils.hasLength(token)) {
-            throw new TokenNotFoundException(TOKEN_NOT_FOUNT);
+            log.error(TOKEN_NOT_FOUNT);
+            response.setStatus(401);
+            securityHandler.write(response.getWriter(),Result.error("登录过期，请重新登录"));
+            return;
         }
         DecodedJWT verify;
         try {
             // 验签
             verify = jwtUtil.verify(token);
         } catch (Exception e) {
-            throw new TokenErrorException(TOKEN_VERIFY_ERROR);
+            log.error(TOKEN_VERIFY_ERROR);
+            response.setStatus(401);
+            securityHandler.write(response.getWriter(),Result.error("登录过期，请重新登录"));
+            return;
         }
         long id = Long.parseLong(verify.getClaim(TOKEN_ID).asString()) ;
 
         // redis验证
         String redisToken = template.opsForValue().get(REDIS_TOKEN_PRE + id);
         if (!StringUtils.hasLength(redisToken)) {
-            throw new TokenExpiredException(TOKEN_EXPIRE_ERROR);
+            log.error(TOKEN_EXPIRE_ERROR);
+            response.setStatus(401);
+            securityHandler.write(response.getWriter(),Result.error("登录过期，请重新登录"));
+            return;
         }
         if (!redisToken.equals(token)) {
-            throw new TokenErrorException(TOKEN_VERIFY_ERROR);
+            log.error(TOKEN_VERIFY_ERROR);
+            response.setStatus(401);
+            securityHandler.write(response.getWriter(),Result.error("登录过期，请重新登录"));
+            return;
         }
         IdThreadLocal.setId(id);
         UsernamePasswordAuthenticationToken authenticationToken =

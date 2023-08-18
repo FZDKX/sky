@@ -3,6 +3,7 @@ package com.fzdkx.aspect;
 import com.fzdkx.annotion.AutoFill;
 import com.fzdkx.constant.AutoFillType;
 import com.fzdkx.constant.MessageConstant;
+import com.fzdkx.constant.SqlConstant;
 import com.fzdkx.utils.IdThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -56,8 +57,10 @@ public class AutoFillAspect {
             if (type == AutoFillType.INSERT) {
                 Method setCreateTime = entity.getClass().getDeclaredMethod("setCreateTime", LocalDateTime.class);
                 Method setCreateUser = entity.getClass().getDeclaredMethod("setCreateUser", Long.class);
+                Method setStatus = entity.getClass().getDeclaredMethod("setStatus", Integer.class);
                 setCreateTime.invoke(entity, now);
                 setCreateUser.invoke(entity, id);
+                setStatus.invoke(entity,SqlConstant.DEFAULT_STATUS);
             }
             Method setUpdateTime = entity.getClass().getDeclaredMethod("setUpdateTime", LocalDateTime.class);
             Method setUpdateUser = entity.getClass().getDeclaredMethod("setUpdateUser", Long.class);

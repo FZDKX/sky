@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace先随意写一个-->
+<mapper namespace="com.fzdkx.mapper.FlavorMapper">
+    <insert id="insertFlavors">
+        insert into dish_flavor
+        (dish_id, name, value)
+        values
+        <foreach collection="flavors" item="flavor" separator=",">
+            (#{flavor.dishId} ,#{flavor.name} ,#{flavor.value})
+        </foreach>
+    </insert>
+    <delete id="deleteFlavorByIds">
+        delete from dish_flavor
+        <where>
+            <choose>
+                <when test="ids != null and ids.size != 0">
+                    id in
+                    <foreach collection="ids" item="id" separator="," open="(" close=")">
+                        #{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+    <delete id="deleteFlavorByDishIds">
+        delete from dish_flavor
+        <where>
+            <choose>
+                <when test="ids != null and ids.size != 0">
+                    dish_id in
+                    <foreach collection="ids" item="dishId" separator="," open="(" close=")">
+                        #{dishId}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+    <select id="selectFlavorsByDishId" resultType="flavor">
+        select *
+        from dish_flavor
+        where dish_id = #{dishId}
+    </select>
+</mapper>

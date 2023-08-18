@@ -133,7 +133,7 @@ public class SecurityHandler {
         write(response.getWriter(),result);
     }
 
-    private void write(Writer out , Result result) throws IOException {
+    public void write(Writer out , Result result) throws IOException {
         String json = objectMapper.writeValueAsString(result);
         // 返回json数据
         out.write(json);

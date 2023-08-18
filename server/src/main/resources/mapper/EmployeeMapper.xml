@@ -54,7 +54,7 @@
                 name = #{name}
             </if>
         </where>
-        order by create_time
+        order by update_time desc
     </select>
     <select id="selectEmployeeById" resultType="com.fzdkx.vo.EmployeeEditVO">
         select id , name , username ,phone , id_number , sex
