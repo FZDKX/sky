@@ -2,6 +2,7 @@ package com.fzdkx.controller.admin;
 
 import com.fzdkx.result.Result;
 import com.fzdkx.utils.AliOssUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class CommonController {
     @Resource
     private AliOssUtil aliOssUtil;
 
+    @ApiOperation("文件上传")
     @PostMapping("/upload")
     public Result<String> upload(MultipartFile file) throws IOException {
         try {

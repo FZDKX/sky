@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  * @create 2023/8/9 15:30
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/employee")
 @Api("员工接口相关方法")
 @Slf4j
 public class EmployeeController {
@@ -30,41 +30,46 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @ApiOperation("添加员工")
-    @PostMapping("/employee")
+    @PostMapping()
     public Result saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         employeeService.addEmployee(employeeDTO);
         return Result.success();
     }
 
     @ApiOperation("员工分页查询")
-    @GetMapping("/employee/page")
+    @GetMapping("/page")
     public Result<PageResult<EmployeePageQueryVO>> pageQueryEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
         PageResult<EmployeePageQueryVO> pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
 
     @ApiOperation("改变员工账号状态")
-    @PostMapping("/employee/status/{status}")
+    @PostMapping("/status/{status}")
     public Result changeStatus(@PathVariable("status") Integer status, Long id) {
         employeeService.changeStatus(status, id);
         return Result.success();
     }
 
-    @PutMapping("/employee")
+    @ApiOperation("修改员工信息")
+    @PutMapping()
     public Result editEmployeeInfo(@RequestBody Employee employee) {
         employeeService.editEmployeeInfo(employee);
         return Result.success();
     }
 
-    @GetMapping("/employee/{id}")
+    @ApiOperation("根据Id查询员工")
+    @GetMapping("/{id}")
     public Result<EmployeeEditVO> queryEmployeeById(@PathVariable("id") Long id) {
         EmployeeEditVO employeeEditVO = employeeService.queryEmployeeById(id);
         return Result.success(employeeEditVO);
     }
 
-    @PutMapping("/employee/editPassword")
+    @ApiOperation("修改密码")
+    @PutMapping("/editPassword")
     public Result editEmployeePassword(@RequestBody EditEmployeePasswordDTO editEmployeePasswordDTO) {
         employeeService.editEmployeePassword(editEmployeePasswordDTO);
         return Result.success();
     }
+
+
 }

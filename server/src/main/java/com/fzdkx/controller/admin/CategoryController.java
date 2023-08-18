@@ -3,16 +3,14 @@ package com.fzdkx.controller.admin;
 import com.fzdkx.dto.CategoryDTO;
 import com.fzdkx.dto.CategoryPageQueryDTO;
 import com.fzdkx.entity.Category;
-import com.fzdkx.entity.Employee;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.result.Result;
 import com.fzdkx.service.CategoryService;
-import com.fzdkx.utils.IdThreadLocal;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,36 +24,42 @@ public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
+    @ApiOperation("分页查询分类获取菜品")
     @GetMapping("/page")
     public Result<PageResult<Category>> pageQueryCategory(CategoryPageQueryDTO categoryPageQueryDTO) {
         PageResult<Category> pageResult = categoryService.pageQueryCategory(categoryPageQueryDTO);
         return Result.success(pageResult);
     }
 
+    @ApiOperation("修改分类或菜品状态")
     @PostMapping("/status/{status}")
     public Result changeStatus(@PathVariable("status") Integer status, Long id) {
         categoryService.changeStatus(status, id);
         return Result.success();
     }
 
+    @ApiOperation("移除分类或菜品")
     @DeleteMapping()
     public Result removeCategory(Integer id) {
         categoryService.removeCategory(id);
         return Result.success();
     }
 
+    @ApiOperation("修改分类或菜品信息")
     @PutMapping()
     public Result changeCategory(@RequestBody CategoryDTO categoryDTO){
         categoryService.changeCategory(categoryDTO);
         return Result.success();
     }
 
+    @ApiOperation("添加分类或菜品")
     @PostMapping()
     public Result saveCategory(@RequestBody CategoryDTO categoryDTO){
         categoryService.saveCategory(categoryDTO);
         return Result.success();
     }
 
+    @ApiOperation("根据类型查询分类或菜品")
     @GetMapping("/list")
     public Result queryCategoryList(Integer type){
         List<Category> categoryList = categoryService.queryCategoryList(type);
