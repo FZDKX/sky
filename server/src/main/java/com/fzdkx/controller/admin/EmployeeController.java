@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/admin/employee")
-@Api("员工接口相关方法")
+@Api(tags = "员工接口相关方法")
 @Slf4j
 public class EmployeeController {
     @Resource
