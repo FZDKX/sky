@@ -16,5 +16,7 @@ public class MessageConstant {
     public static final String TOKEN_EXPIRE_ERROR = "token已过期";
     public static final String TOKEN_NOT_FOUNT = "token未携带";
     public static final String SQL_EMPLOYEE_PASSWORD_ERROR = "原密码错误";
-    public static final String  AUTO_FILL_ERROR= "字段填充出现错误";
+    public static final String AUTO_FILL_ERROR= "字段填充出现错误";
+    public static final String SETMEAL_ISNULL_ERROR = "套餐信息不能为空";
+    public static final String DISH_ISNULL_ERROR = "菜品信息不能为空";
 }

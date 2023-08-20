@@ -4,6 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--namespace先随意写一个-->
 <mapper namespace="com.fzdkx.mapper.SetmealMapper">
+    <insert id="insertSetmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal
+        (category_id, name, price, description, image, create_time, update_time, create_user, update_user , status)
+        values
+        (#{categoryId} , #{name} , #{price} , #{description} , #{image} , #{createTime} , #{updateTime} , #{createUser} , #{updateUser} ,#{status})
+    </insert>
 
 
     <update id="updateSetmealStatus">
@@ -24,33 +30,26 @@
             </choose>
         </where>
     </update>
-</mapper>
-
-<!--
-
     <update id="updateSetmeal">
         update setmeal
         <set>
             <if test="categoryId != null">
-                category_id = #{categoryId}
+                category_id = #{categoryId} ,
             </if>
             <if test="name != null">
-                name = #{name}
+                name = #{name} ,
             </if>
             <if test="price != null">
-                price = #{price}
-            </if>
-            <if test="status != null">
-                status = #{status}
+                price = #{price} ,
             </if>
             <if test="description != null">
-                description = #{description}
+                description = #{description} ,
             </if>
             <if test="image != null">
-                image = #{image}
+                image = #{image} ,
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime}
+                update_time = #{updateTime} ,
             </if>
             <if test="updateUser != null">
                 update_user = #{updateUser}
@@ -59,5 +58,55 @@
         where id = #{id}
     </update>
 
+    <update id="updateSetmealStatusById">
+        update setmeal
+        set  status = #{status} , update_time = #{updateTime} ,update_user = #{updateUser}
+        where id = #{id}
+    </update>
+    <delete id="deleteSetmeal">
+        delete from setmeal
+        <where>
+            <choose>
+                <when test="ids != null and ids.size != 0">
+                    id in
+                    <foreach collection="ids" item="id" separator="," open="(" close=")">
+                        #{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+    <select id="pageSelectSetmeal" resultType="com.fzdkx.vo.SetmealPageQueryVO">
+        select s.id , s.name ,s.category_id , s.price , s.status , s.image , s.update_time , c.name as categoryName
+        from setmeal as s
+        left join category as c
+        on s.category_id = c.id
+        <where>
+            <if test="categoryId != null">
+                s.category_id = #{categoryId}
+            </if>
+            <if test="name != null">
+                s.name like concat('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                s.status = #{status}
+            </if>
+        </where>
+    </select>
 
--->
+    <select id="selectSetmealById" resultType="com.fzdkx.vo.SetmealPageQueryVO">
+        select s.id , s.name ,s.category_id , s.price , s.status , s.image , s.update_time , c.name as categoryName
+        from setmeal as s
+        left join category as c
+        on s.category_id = c.id
+        where s.id = #{id}
+    </select>
+    <select id="selectSetmealStatus" resultType="java.lang.Integer">
+        select status
+        from setmeal
+        where id = #{id}
+    </select>
+</mapper>

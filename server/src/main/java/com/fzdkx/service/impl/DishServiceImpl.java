@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
+
 /**
  * @author 发着呆看星
  * @create 2023/8/18 11:53
@@ -94,6 +96,7 @@ public class DishServiceImpl implements DishService {
     @Transactional
     public void saveDish(DishChangeDTO dishChangeDTO) {
         Dish dish = new Dish();
+        dish.setStatus(DEFAULT_STATUS);
         BeanUtils.copyProperties(dishChangeDTO,dish);
         // 添加菜品
         dishMapper.insertDish(dish);

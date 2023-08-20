@@ -6,6 +6,7 @@ import com.fzdkx.entity.Category;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.result.Result;
 import com.fzdkx.service.CategoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@Api("分类相关接口")
 @RequestMapping("/admin/category")
 public class CategoryController {
     @Resource

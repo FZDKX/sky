@@ -2,6 +2,7 @@ package com.fzdkx.controller.admin;
 
 import com.fzdkx.result.Result;
 import com.fzdkx.utils.AliOssUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/admin/common")
+@Api("公共接口")
 @Slf4j
 public class CommonController {
     @Resource

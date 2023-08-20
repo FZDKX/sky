@@ -4,9 +4,42 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--namespace先随意写一个-->
 <mapper namespace="com.fzdkx.mapper.SetmealDishMapper">
+    <insert id="insertSetmealDish">
+        insert into setmeal_dish
+        (setmeal_id, dish_id, name, price, copies)
+        values
+        <foreach collection="setmealDishes" item="setmealDish" separator=",">
+            ( #{setmealDish.setmealId} , #{setmealDish.dishId} , #{setmealDish.name} , #{setmealDish.price} , #{setmealDish.copies} )
+        </foreach>
+    </insert>
+    <delete id="deleteBySetmealIds">
+        delete from setmeal_dish
+        <where>
+            <choose>
+                <when test="ids != null and ids.size != 0">
+                    setmeal_id in
+                    <foreach collection="ids" item="id" separator="," open="(" close=")">
+                        #{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+    <delete id="deleteBySetmealId">
+        delete from setmeal_dish
+        where setmeal_id = #{setmealId}
+    </delete>
     <select id="selectDish" resultType="long">
         select setmeal_id
         from setmeal_dish
         where dish_id = #{dishId}
+    </select>
+    <select id="selectBySetmealId" resultType="com.fzdkx.entity.SetmealDish">
+        select *
+        from setmeal_dish
+        where setmeal_id = #{setmealId}
     </select>
 </mapper>
