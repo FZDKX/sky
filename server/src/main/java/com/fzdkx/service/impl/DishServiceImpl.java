@@ -1,6 +1,8 @@
 package com.fzdkx.service.impl;
 
+import com.fzdkx.entity.Setmeal;
 import com.fzdkx.exception.SqlException;
+import com.fzdkx.mapper.SetmealDishMapper;
 import com.fzdkx.mapper.SetmealMapper;
 import com.fzdkx.vo.DishAndFlavorVO;
 import com.fzdkx.entity.Dish;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,8 @@ public class DishServiceImpl implements DishService {
     private FlavorMapper flavorMapper;
     @Resource
     private SetmealMapper setmealMapper;
+    @Resource
+    private SetmealDishMapper setmealDishMapper;
 
     @Override
     public PageResult<DishVO> pageQueryDish(DishPageQueryVO dishPageQueryVO) {
@@ -102,10 +107,17 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public void changeDishStatus(Integer status, Long id) {
-        Dish dish = new Dish();
-        dish.setStatus(status);
-        dish.setId(id);
+        // 修改菜品状态
+        Dish dish = Dish.builder()
+                        .status(status)
+                        .id(id).build();
         dishMapper.updateDish(dish);
+        // 查询菜品关联套餐
+        List<Long> setmealIds = setmealDishMapper.selectDish(id);
+        // 修改菜品关联套餐状态
+        Setmeal setmeal = Setmeal.builder()
+                                 .status(status).build();
+        setmealMapper.updateSetmealStatus(setmeal,setmealIds);
     }
 
     @Override
@@ -125,7 +137,7 @@ public class DishServiceImpl implements DishService {
         }
         // 与套餐关联菜品不能删除
         for (Long dishId : ids) {
-            List<Long> setmealIds = setmealMapper.selectDish(dishId);
+            List<Long> setmealIds = setmealDishMapper.selectDish(dishId);
             if (setmealIds != null && setmealIds.size() != 0){
                 flag = false;
                 break;

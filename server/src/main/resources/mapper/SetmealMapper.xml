@@ -5,9 +5,59 @@
 <!--namespace先随意写一个-->
 <mapper namespace="com.fzdkx.mapper.SetmealMapper">
 
-    <select id="selectDish" resultType="long">
-        select setmeal_id
-        from setmeal_dish
-        where dish_id = #{dishId}
-    </select>
+
+    <update id="updateSetmealStatus">
+        update setmeal
+        set
+        status = #{setmeal.status} , update_time = #{setmeal.updateTime} ,update_user = #{setmeal.updateUser}
+        <where>
+            <choose>
+                <when test="setmealIds != null and setmealIds.size != 0">
+                    id in
+                    <foreach collection="setmealIds" item="id" separator="," open="(" close=")">
+                        #{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </update>
 </mapper>
+
+<!--
+
+    <update id="updateSetmeal">
+        update setmeal
+        <set>
+            <if test="categoryId != null">
+                category_id = #{categoryId}
+            </if>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="price != null">
+                price = #{price}
+            </if>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="description != null">
+                description = #{description}
+            </if>
+            <if test="image != null">
+                image = #{image}
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime}
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+-->

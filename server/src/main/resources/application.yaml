@@ -1,20 +1,24 @@
 spring:
+  profiles:
+    active: dev   #环境设置 dev，开发环境
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sky_takeout?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: abc123
+    druid:
+      driver-class-name: ${sky.datasource.driver-class-name}
+      url: ${sky.datasource.url}
+      username: ${sky.datasource.username}
+      password: ${sky.datasource.password}
   redis:
-    host: 192.168.3.166
-    port: 6379
-    database: 1
-    password: 123321
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+    database: ${sky.redis.database}
+    password: ${sky.redis.password}
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.fzdkx.entity
   configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true    #开启驼峰命名映射
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   #sql日志
 
 sky:
   jwt:
@@ -22,7 +26,7 @@ sky:
     ttl: 2
     token-name: token
   oos:
-    endpoint: oss-cn-heyuan.aliyuncs.com
-    access-key-id: LTAI5tB3NTWMoKZcXmdLXXBq
-    access-key-secret: s7m09hFzGIJsfAMmRaCOJMGxhUy6R6
-    bucket-name: fzdkx-sky
+    endpoint: ${sky.oos.endpoint}
+    access-key-id: ${sky.oos.access-key-id}
+    access-key-secret: ${sky.oos.access-key-secret}
+    bucket-name: ${sky.oos.bucket-name}

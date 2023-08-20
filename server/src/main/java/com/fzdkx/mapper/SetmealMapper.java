@@ -1,5 +1,8 @@
 package com.fzdkx.mapper;
 
+import com.fzdkx.annotion.AutoFill;
+import com.fzdkx.constant.AutoFillType;
+import com.fzdkx.entity.Setmeal;
 import io.lettuce.core.dynamic.annotation.Param;
 
 import java.util.List;
@@ -10,5 +13,6 @@ import java.util.List;
  */
 public interface SetmealMapper {
 
-    public List<Long> selectDish(@Param("dishId") Long dishId);
+    @AutoFill(AutoFillType.UPDATE)
+    void updateSetmealStatus(@Param("setmeal") Setmeal setmeal , @Param("setmealIds") List<Long> setmealIds);
 }

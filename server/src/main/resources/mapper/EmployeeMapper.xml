@@ -51,7 +51,7 @@
         select id , name , username , phone , status , update_time  from employee
         <where>
             <if test=" name != null and name != '' ">
-                name = #{name}
+                name like concat('%',#{name},'%')
             </if>
         </where>
         order by update_time desc
