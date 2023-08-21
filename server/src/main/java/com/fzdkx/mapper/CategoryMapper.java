@@ -26,4 +26,5 @@ public interface CategoryMapper {
     void insertCategory(Category category);
 
     List<Category> selectCategoryList(@Param("type") Integer type);
+
 }

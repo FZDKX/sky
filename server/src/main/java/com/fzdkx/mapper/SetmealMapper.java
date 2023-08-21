@@ -34,4 +34,6 @@ public interface SetmealMapper {
 
     @AutoFill(AutoFillType.UPDATE)
     void updateSetmealStatusById(@Param("setmeal") Setmeal setmeal);
+
+    List<Setmeal> selectSetmealList(Long categoryId);
 }

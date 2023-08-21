@@ -19,7 +19,7 @@ import java.util.List;
  * @author 发着呆看星
  * @create 2023/8/20 11:36
  */
-@RestController
+@RestController("adminSetmealController")
 @RequestMapping("/admin/setmeal")
 @Api(tags = "套餐相关接口")
 public class SetmealController {

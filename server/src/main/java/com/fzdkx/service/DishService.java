@@ -3,6 +3,7 @@ package com.fzdkx.service;
 import com.fzdkx.vo.DishAndFlavorVO;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.dto.DishChangeDTO;
+import com.fzdkx.vo.DishItemVO;
 import com.fzdkx.vo.DishPageQueryVO;
 import com.fzdkx.vo.DishVO;
 
@@ -19,12 +20,16 @@ public interface DishService {
 
     List<DishVO> queryDishListByCategoryId(Long categoryId);
 
-    DishAndFlavorVO queryDishById(Long id);
+    DishAndFlavorVO queryDishAnFlavorById(Long id);
 
     void saveDish(DishChangeDTO dishChangeDTO);
 
     void changeDishStatus(Integer status, Long id);
 
     void remove(List<Long> ids);
+
+    List<DishItemVO> queryDishItemList(Long id);
+
+    List<DishAndFlavorVO> queryDishAnFlavorByCategoryId(Long categoryId);
 
 }

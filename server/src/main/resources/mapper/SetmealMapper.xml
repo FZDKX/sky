@@ -109,4 +109,9 @@
         from setmeal
         where id = #{id}
     </select>
+    <select id="selectSetmealList" resultType="com.fzdkx.entity.Setmeal">
+        select *
+        from setmeal
+        where category_id = #{categoryId}
+    </select>
 </mapper>

@@ -138,4 +138,12 @@ public class SetmealServiceImpl implements SetmealService {
         }
         setmealDishMapper.insertSetmealDish(setmealDishes);
     }
+
+    @Override
+    public List<Setmeal> querySetmealListByCategory(Long categoryId) {
+        List<Setmeal> setmealList = setmealMapper.selectSetmealList(categoryId);
+        return setmealList;
+    }
+
+
 }

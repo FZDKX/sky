@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  * @author 发着呆看星
  * @create 2023/8/9 15:30
  */
-@RestController
+@RestController("adminEmployeeController")
 @RequestMapping("/admin/employee")
 @Api(tags = "员工接口相关方法")
 @Slf4j

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fzdkx.constant.MessageConstant;
 import com.fzdkx.entity.User;
 import com.fzdkx.exception.LoginException;
+import com.fzdkx.exception.LogoutException;
 import com.fzdkx.exception.UserNotFoundException;
 import com.fzdkx.mapper.UserMapper;
 import com.fzdkx.properties.JwtProperties;
@@ -12,6 +13,7 @@ import com.fzdkx.properties.WeChatProperties;
 import com.fzdkx.service.UserService;
 import com.fzdkx.utils.HttpClientUtil;
 import com.fzdkx.utils.JwtUtil;
+import com.fzdkx.utils.UserThreadLocal;
 import com.fzdkx.vo.UserLoginVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.fzdkx.constant.MessageConstant.LOGOUT_ERROR;
 import static com.fzdkx.constant.RedisConstant.REDIS_USER_TOKEN_PRE;
 
 /**
@@ -84,6 +87,14 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user,userLoginVO);
         userLoginVO.setToken(token);
         return userLoginVO;
+    }
+
+    @Override
+    public void wxLogout() {
+        Boolean flag = template.delete(REDIS_USER_TOKEN_PRE + UserThreadLocal.getId());
+        if (flag == null || !flag){
+            throw new LogoutException(LOGOUT_ERROR);
+        }
     }
 
     public String getOpenId(String code){

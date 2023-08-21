@@ -18,7 +18,7 @@ import java.util.List;
  * @author 发着呆看星
  * @create 2023/8/16 17:45
  */
-@RestController
+@RestController("adminCategoryController")
 @Slf4j
 @Api(tags = "分类相关接口")
 @RequestMapping("/admin/category")

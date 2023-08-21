@@ -12,6 +12,7 @@ import com.fzdkx.mapper.FlavorMapper;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.service.DishService;
 import com.fzdkx.dto.DishChangeDTO;
+import com.fzdkx.vo.DishItemVO;
 import com.fzdkx.vo.DishPageQueryVO;
 import com.fzdkx.vo.DishVO;
 import com.github.pagehelper.PageHelper;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,9 +82,9 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public DishAndFlavorVO queryDishById(Long id) {
+    public DishAndFlavorVO queryDishAnFlavorById(Long id) {
         // 查询菜品信息
-        DishAndFlavorVO dish = dishMapper.selectDishById(id);
+        DishAndFlavorVO dish = dishMapper.selectDishAndFlavorById(id);
         // 根据菜品信息查询口味信息
         List<Flavor> flavorList = flavorMapper.selectFlavorsByDishId(id);
         // 封装
@@ -153,5 +153,26 @@ public class DishServiceImpl implements DishService {
         dishMapper.deleteDish(ids);
         // 删除菜品相关口味
         flavorMapper.deleteFlavorByDishIds(ids);
+    }
+
+    @Override
+    public List<DishItemVO> queryDishItemList(Long id) {
+        return dishMapper.selectDishListBySetmealId(id);
+    }
+
+    @Override
+    public List<DishAndFlavorVO> queryDishAnFlavorByCategoryId(Long categoryId) {
+        // 查询菜品信息
+        List<DishAndFlavorVO> dishes = dishMapper.selectDishAndFlavorByCategoryId(categoryId);
+        if (dishes == null || dishes.size() == 0){
+            throw new SqlException("该分类下没有菜品");
+        }
+        // 根据菜品信息查询口味信息并封装
+        for (DishAndFlavorVO dish : dishes) {
+            List<Flavor> flavorList = flavorMapper.selectFlavorsByDishId(dish.getId());
+            // 封装
+            dish.setFlavors(flavorList);
+        }
+        return dishes;
     }
 }

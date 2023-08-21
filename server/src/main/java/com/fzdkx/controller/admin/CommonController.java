@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author 发着呆看星
  * @create 2023/8/17 12:00
  */
-@RestController
+@RestController("adminCommonController")
 @RequestMapping("/admin/common")
 @Api(tags = "公共接口")
 @Slf4j

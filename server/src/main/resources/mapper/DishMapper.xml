@@ -44,16 +44,31 @@
         order by update_time desc
     </select>
 
-    <select id="selectDishById" resultType="com.fzdkx.vo.DishAndFlavorVO">
+    <select id="selectDishAndFlavorById" resultType="com.fzdkx.vo.DishAndFlavorVO">
         select d.* , c.`name` as categoryName
         FROM dish as d
-                 LEFT JOIN category as c ON d.category_id = c.id
+        LEFT JOIN category as c ON d.category_id = c.id
         WHERE d.id = #{id}
     </select>
     <select id="selectDishStatus" resultType="java.lang.Integer">
         select status
         from dish
         where id = #{id}
+    </select>
+
+    <select id="selectDishListBySetmealId" resultType="com.fzdkx.vo.DishItemVO">
+        select sd.copies , s.description , d.image , sd.name
+        from setmeal as s
+        left join setmeal_dish as sd
+        left join dish as d on sd.dish_id = d.id
+        on s.id = sd.setmeal_id
+        where sd.setmeal_id = #{setmealId}
+    </select>
+    <select id="selectDishAndFlavorByCategoryId" resultType="com.fzdkx.vo.DishAndFlavorVO">
+        select d.* , c.`name` as categoryName
+        FROM dish as d
+        LEFT JOIN category as c ON d.category_id = c.id
+        WHERE c.id = #{categoryId}
     </select>
 
     <update id="updateDish">

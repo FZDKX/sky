@@ -4,6 +4,7 @@ import com.fzdkx.annotion.AutoFill;
 import com.fzdkx.constant.AutoFillType;
 import com.fzdkx.vo.DishAndFlavorVO;
 import com.fzdkx.entity.Dish;
+import com.fzdkx.vo.DishItemVO;
 import com.fzdkx.vo.DishVO;
 import io.lettuce.core.dynamic.annotation.Param;
 
@@ -20,7 +21,7 @@ public interface DishMapper {
     @AutoFill(AutoFillType.UPDATE)
     void updateDish(Dish dish);
 
-    DishAndFlavorVO selectDishById(@Param("id") Long id);
+    DishAndFlavorVO selectDishAndFlavorById(@Param("id") Long id);
 
     @AutoFill(AutoFillType.INSERT)
     void insertDish(Dish dish);
@@ -29,4 +30,7 @@ public interface DishMapper {
 
     void deleteDish(List<Long> ids);
 
+    List<DishItemVO> selectDishListBySetmealId(Long setmealId);
+
+    List<DishAndFlavorVO> selectDishAndFlavorByCategoryId(@Param("categoryId") Long categoryId);
 }

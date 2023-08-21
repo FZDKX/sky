@@ -24,4 +24,5 @@ public interface SetmealDishMapper {
 
 
     void deleteBySetmealId(@Param("setmealId") Long id);
+
 }

@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * @author 发着呆看星
  * @create 2023/8/20 19:50
  */
-@RestController()
+@RestController("userShopController")
 @Api(tags = "用户端店铺接口")
 @RequestMapping("/user/shop")
 public class ShopController {

@@ -19,7 +19,7 @@ import java.util.List;
  * @author 发着呆看星
  * @create 2023/8/18 10:38
  */
-@RestController
+@RestController("adminDishController")
 @Slf4j
 @Api(tags = "菜品相关接口")
 @RequestMapping("/admin/dish")
@@ -51,7 +51,7 @@ public class DishController {
     @ApiOperation("根据ID查询菜品")
     @GetMapping("/{id}")
     public Result<DishAndFlavorVO> queryDishByID(@PathVariable("id") Long id) {
-        DishAndFlavorVO dishAndFlavorVO = dishService.queryDishById(id);
+        DishAndFlavorVO dishAndFlavorVO = dishService.queryDishAnFlavorById(id);
         return Result.success(dishAndFlavorVO);
     }
 

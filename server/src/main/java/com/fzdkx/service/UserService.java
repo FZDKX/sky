@@ -8,4 +8,6 @@ import com.fzdkx.vo.UserLoginVO;
  */
 public interface UserService {
     UserLoginVO wxLogin(String code);
+
+    void wxLogout();
 }

@@ -25,4 +25,7 @@ public interface SetmealService {
     void alterSetmealStatus(Integer status, Long id);
 
     void alterSetmeal(SetmealEditDTO setmealEditDTO);
+
+    List<Setmeal> querySetmealListByCategory(Long categoryId);
+
 }
