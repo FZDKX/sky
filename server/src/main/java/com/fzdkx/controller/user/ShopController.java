@@ -14,9 +14,9 @@ import javax.annotation.Resource;
  * @author 发着呆看星
  * @create 2023/8/20 19:50
  */
-@RestController("userShopController")
+@RestController()
 @Api(tags = "用户端店铺接口")
-@RequestMapping("/admin/user")
+@RequestMapping("/user/shop")
 public class ShopController {
     @Resource
     private ShopService shopService;
@@ -25,6 +25,6 @@ public class ShopController {
     @ApiOperation("获取店铺状态")
     public Result queryStatus(){
         Integer status = shopService.getStatus();
-        return Result.success();
+        return Result.success(status);
     }
 }

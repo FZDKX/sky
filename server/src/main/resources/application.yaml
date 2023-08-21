@@ -24,9 +24,13 @@ sky:
   jwt:
     secure-key: dihdiosahdskandioadhuisadhd
     ttl: 2
-    token-name: token
+    admin-token-name: token
+    user-token-name: authentication
   oos:
     endpoint: ${sky.oos.endpoint}
     access-key-id: ${sky.oos.access-key-id}
     access-key-secret: ${sky.oos.access-key-secret}
     bucket-name: ${sky.oos.bucket-name}
+  wechat:
+    appid: ${sky.wx.appid}
+    secret: ${sky.wx.secret}

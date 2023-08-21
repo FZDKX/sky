@@ -1,6 +1,7 @@
 package com.fzdkx.config;
 
-import com.fzdkx.interceptor.TokenInterceptor;
+import com.fzdkx.interceptor.AdminTokenInterceptor;
+import com.fzdkx.interceptor.UserTokenInterceptor;
 import com.fzdkx.json.JacksonObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,9 @@ import java.util.List;
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Resource
-    private TokenInterceptor tokenInterceptor;
+    private AdminTokenInterceptor adminTokenInterceptor;
+    @Resource
+    private UserTokenInterceptor userTokenInterceptor;
 
     /**
      * 通过knife4j生成接口文档
@@ -82,9 +85,13 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     // ThreadLocal拦截器，对ThreadLocal进行 remove
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tokenInterceptor)
+        registry.addInterceptor(adminTokenInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
+        registry.addInterceptor(userTokenInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/shop/status");
     }
 
     @Override

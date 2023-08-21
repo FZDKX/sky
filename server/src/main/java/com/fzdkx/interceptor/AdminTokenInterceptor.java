@@ -13,14 +13,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.fzdkx.constant.RedisConstant.REDIS_TOKEN_PRE;
+import static com.fzdkx.constant.RedisConstant.REDIS_ADMIN_TOKEN_PRE;
 
 /**
  * @author 发着呆看星
  * @create 2023/8/21 11:37
  */
 @Component
-public class TokenInterceptor implements HandlerInterceptor {
+public class AdminTokenInterceptor implements HandlerInterceptor {
 
     @Resource
     private JwtProperties jwtProperties;
@@ -36,7 +36,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
         // 获取Token
-        String token = request.getHeader(jwtProperties.getTokenName());
+        String token = request.getHeader(jwtProperties.getAdminTokenName());
         // 判断是否为空
         if (token == null) {
             response.setStatus(401, "token为携带");
@@ -52,7 +52,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         // 判断是否已安全退出登录
         Long id = Long.valueOf(verify.getClaim("id").asString());
-        String redisToken = template.opsForValue().get(REDIS_TOKEN_PRE + id);
+        String redisToken = template.opsForValue().get(REDIS_ADMIN_TOKEN_PRE + id);
         if (redisToken == null || redisToken.equals("")) {
             response.setStatus(401, "Token已失效，请重写登录");
             return false;

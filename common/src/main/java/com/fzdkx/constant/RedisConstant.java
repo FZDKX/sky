@@ -6,5 +6,6 @@ package com.fzdkx.constant;
  * Redis常量类
  */
 public class RedisConstant {
-    public static final String REDIS_TOKEN_PRE = "token:";
+    public static final String REDIS_ADMIN_TOKEN_PRE = "token:admin:";
+    public static final String REDIS_USER_TOKEN_PRE = "token:user:";
 }

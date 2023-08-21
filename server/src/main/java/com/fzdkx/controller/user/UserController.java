@@ -1,6 +1,9 @@
 package com.fzdkx.controller.user;
 
+import com.fzdkx.dto.UserLoginDTO;
 import com.fzdkx.result.Result;
+import com.fzdkx.service.UserService;
+import com.fzdkx.vo.UserLoginVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +18,12 @@ import javax.annotation.Resource;
 @RestController()
 @RequestMapping("/user/user")
 public class UserController {
+    @Resource
+    private UserService userService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody String code){
-
-        return Result.success();
+    public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
+        UserLoginVO userLoginVO = userService.wxLogin(userLoginDTO.getCode());
+        return Result.success(userLoginVO);
     }
 }

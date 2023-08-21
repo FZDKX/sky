@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.fzdkx.constant.MessageConstant.SQL_EMPLOYEE_PASSWORD_ERROR;
-import static com.fzdkx.constant.RedisConstant.REDIS_TOKEN_PRE;
+import static com.fzdkx.constant.RedisConstant.REDIS_ADMIN_TOKEN_PRE;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_PASSWORD;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
@@ -133,7 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 生成Token
         String token = getToken(employee);
         // 将Token存储至Redis
-        template.opsForValue().set(REDIS_TOKEN_PRE+employee.getId(),token,jwtProperties.getTtl(), TimeUnit.HOURS);
+        template.opsForValue().set(REDIS_ADMIN_TOKEN_PRE+employee.getId(),token,jwtProperties.getTtl(), TimeUnit.HOURS);
         // 获取VO对象返回
         EmployeeLoginVO employeeLoginVO = new EmployeeLoginVO();
         BeanUtils.copyProperties(employee,employeeLoginVO);
@@ -143,7 +143,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void logout(){
-        template.delete(REDIS_TOKEN_PRE+ EmployeeThreadLocal.getId());
+        template.delete(REDIS_ADMIN_TOKEN_PRE+ EmployeeThreadLocal.getId());
     }
 
     private String getToken(Employee employee){

@@ -14,3 +14,6 @@ sky:
     access-key-id: LTAI5tB3NTWMoKZcXmdLXXBq
     access-key-secret: s7m09hFzGIJsfAMmRaCOJMGxhUy6R6
     bucket-name: fzdkx-sky
+  wx:
+    appid: wx2930ad0234941e54
+    secret: 1e5ccf37b6cd406f96222660fe390eaf
