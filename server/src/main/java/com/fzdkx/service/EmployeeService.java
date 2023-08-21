@@ -2,12 +2,15 @@ package com.fzdkx.service;
 
 import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
+import com.fzdkx.dto.EmployeeLoginDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.result.Result;
 import com.fzdkx.vo.EmployeeEditVO;
+import com.fzdkx.vo.EmployeeLoginVO;
 import com.fzdkx.vo.EmployeePageQueryVO;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * @author 发着呆看星
@@ -44,4 +47,8 @@ public interface EmployeeService {
      */
     void editEmployeePassword(EditEmployeePasswordDTO editEmployeePasswordDTO);
 
+    EmployeeLoginVO login(EmployeeLoginDTO employeeLoginDTO);
+
+    @PostMapping("/logout")
+    void logout();
 }

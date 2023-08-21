@@ -2,12 +2,14 @@ package com.fzdkx.controller.admin;
 
 import com.fzdkx.dto.EditEmployeePasswordDTO;
 import com.fzdkx.dto.EmployeeDTO;
+import com.fzdkx.dto.EmployeeLoginDTO;
 import com.fzdkx.dto.EmployeePageQueryDTO;
 import com.fzdkx.entity.Employee;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.result.Result;
 import com.fzdkx.service.EmployeeService;
 import com.fzdkx.vo.EmployeeEditVO;
+import com.fzdkx.vo.EmployeeLoginVO;
 import com.fzdkx.vo.EmployeePageQueryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,17 @@ import javax.annotation.Resource;
 public class EmployeeController {
     @Resource
     private EmployeeService employeeService;
+
+    @PostMapping("/login")
+    public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO){
+        EmployeeLoginVO employeeLoginVO = employeeService.login(employeeLoginDTO);
+        return Result.success(employeeLoginVO);
+    }
+    @PostMapping("/logout")
+    private Result logout(){
+        employeeService.logout();
+        return Result.success();
+    }
 
     @ApiOperation("添加员工")
     @PostMapping()

@@ -3,8 +3,7 @@ package com.fzdkx.aspect;
 import com.fzdkx.annotion.AutoFill;
 import com.fzdkx.constant.AutoFillType;
 import com.fzdkx.constant.MessageConstant;
-import com.fzdkx.constant.SqlConstant;
-import com.fzdkx.utils.IdThreadLocal;
+import com.fzdkx.utils.EmployeeThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -52,7 +51,7 @@ public class AutoFillAspect {
 
         // 根据数据库操作类型，对实体类对象进行公共字段填充
         LocalDateTime now = LocalDateTime.now();
-        Long id = IdThreadLocal.getId();
+        Long id = EmployeeThreadLocal.getId();
         try {
             if (type == AutoFillType.INSERT) {
                 Method setCreateTime = entity.getClass().getDeclaredMethod("setCreateTime", LocalDateTime.class);
