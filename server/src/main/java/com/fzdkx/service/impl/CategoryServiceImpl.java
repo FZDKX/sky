@@ -1,5 +1,6 @@
 package com.fzdkx.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fzdkx.dto.CategoryDTO;
 import com.fzdkx.dto.CategoryPageQueryDTO;
 import com.fzdkx.entity.Category;
@@ -9,11 +10,13 @@ import com.fzdkx.service.CategoryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.fzdkx.constant.RedisConstant.CATEGORY_KEY;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
 /**
@@ -22,6 +25,8 @@ import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
  */
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    @Resource
+    private StringRedisTemplate template;
     @Resource
     private CategoryMapper categoryMapper;
 
@@ -73,6 +78,24 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> queryCategoryList(Integer type) {
-        return categoryMapper.selectCategoryList(type);
+        // 先查询缓存，看是否有数据
+        String json = template.opsForValue().get(CATEGORY_KEY);
+
+        // 如果缓存有数据，则直接返回
+        if (json != null && !json.equals("")) {
+            return JSONObject.parseArray(json, Category.class);
+        }
+
+        // 查询数据库
+        List<Category> categoryList = categoryMapper.selectCategoryList(type);
+
+        // list 转 json
+        json= JSONObject.toJSONString(categoryList);
+
+        // 重建缓存
+        template.opsForValue().set(CATEGORY_KEY,json);
+
+        // 返回
+        return categoryList;
     }
 }

@@ -4,6 +4,7 @@ import com.fzdkx.entity.Category;
 import com.fzdkx.result.Result;
 import com.fzdkx.service.CategoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/list")
+    @ApiOperation("根据类型查询分类")
     public Result<List<Category>> queryCategoryList(Integer type){
         List<Category> categoryList = categoryService.queryCategoryList(type);
         return Result.success(categoryList);

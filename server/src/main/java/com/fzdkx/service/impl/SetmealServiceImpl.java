@@ -1,5 +1,6 @@
 package com.fzdkx.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fzdkx.dto.SetmealEditDTO;
 import com.fzdkx.dto.SetmealPageQueryDTO;
 import com.fzdkx.entity.Setmeal;
@@ -14,14 +15,15 @@ import com.fzdkx.vo.SetmealVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.fzdkx.constant.MessageConstant.DISH_ISNULL_ERROR;
+import static com.fzdkx.constant.RedisConstant.SETMEAL_CATEGORY_PREFIX;
 
 /**
  * @author 发着呆看星
@@ -34,6 +36,8 @@ public class SetmealServiceImpl implements SetmealService {
     private SetmealMapper setmealMapper;
     @Resource
     private SetmealDishMapper setmealDishMapper;
+    @Resource
+    private StringRedisTemplate template;
 
     @Override
     public PageResult<SetmealPageQueryVO > pageQuerySetmeal(SetmealPageQueryDTO setmealPageQueryDTO) {
@@ -141,7 +145,18 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Override
     public List<Setmeal> querySetmealListByCategory(Long categoryId) {
+        // 先从缓存中查找
+        String json = template.opsForValue().get(SETMEAL_CATEGORY_PREFIX + categoryId);
+
+        // 如果缓存中有，直接返回
+        if (json != null) {
+            return JSONObject.parseArray(json, Setmeal.class);
+        }
         List<Setmeal> setmealList = setmealMapper.selectSetmealList(categoryId);
+
+        // 重建缓存
+        json = JSONObject.toJSONString(setmealList);
+        template.opsForValue().set(SETMEAL_CATEGORY_PREFIX + categoryId, json);
         return setmealList;
     }
 

@@ -20,4 +20,5 @@ public class MessageConstant {
     public static final String SETMEAL_ISNULL_ERROR = "套餐信息不能为空";
     public static final String DISH_ISNULL_ERROR = "菜品信息不能为空";
     public static final String LOGIN_FAILED = "登录失败";
+    public static final String NOT_DATA_ERROR = "暂无数据";
 }
