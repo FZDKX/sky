@@ -10,6 +10,7 @@ import com.fzdkx.service.CategoryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -78,24 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> queryCategoryList(Integer type) {
-        // 先查询缓存，看是否有数据
-        String json = template.opsForValue().get(CATEGORY_KEY);
-
-        // 如果缓存有数据，则直接返回
-        if (json != null && !json.equals("")) {
-            return JSONObject.parseArray(json, Category.class);
-        }
-
         // 查询数据库
-        List<Category> categoryList = categoryMapper.selectCategoryList(type);
-
-        // list 转 json
-        json= JSONObject.toJSONString(categoryList);
-
-        // 重建缓存
-        template.opsForValue().set(CATEGORY_KEY,json);
-
-        // 返回
-        return categoryList;
+        return categoryMapper.selectCategoryList(type);
     }
 }

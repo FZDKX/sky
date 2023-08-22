@@ -62,13 +62,13 @@
         left join setmeal_dish as sd
         left join dish as d on sd.dish_id = d.id
         on s.id = sd.setmeal_id
-        where sd.setmeal_id = #{setmealId}
+        where sd.setmeal_id = #{setmealId} and d.status = 1;
     </select>
     <select id="selectDishAndFlavorByCategoryId" resultType="com.fzdkx.vo.DishAndFlavorVO">
         select d.* , c.`name` as categoryName
         FROM dish as d
         LEFT JOIN category as c ON d.category_id = c.id
-        WHERE c.id = #{categoryId}
+        WHERE c.id = #{categoryId} and d.status = 1
     </select>
 
     <update id="updateDish">

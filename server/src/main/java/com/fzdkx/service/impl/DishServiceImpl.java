@@ -27,8 +27,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fzdkx.constant.RedisConstant.DISH_CATEGORY_PREFIX;
-import static com.fzdkx.constant.RedisConstant.DISH_ITEM_PREFIX;
+import static com.fzdkx.constant.RedisConstant.*;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
 /**
@@ -164,7 +163,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public List<DishItemVO> queryDishItemList(Long id) {
         // 先从缓存中查找
-        String json = template.opsForValue().get(DISH_ITEM_PREFIX + id);
+        String json = template.opsForValue().get(DISH_SETMEAL_PREFIX + id);
 
         // 如果缓存中有，直接返回
         if (json != null) {
@@ -175,7 +174,7 @@ public class DishServiceImpl implements DishService {
 
         // 重建缓存
         json = JSONObject.toJSONString(dishItemVOList);
-        template.opsForValue().set(DISH_ITEM_PREFIX + id, json);
+        template.opsForValue().set(DISH_SETMEAL_PREFIX + id, json);
 
         return dishItemVOList;
     }

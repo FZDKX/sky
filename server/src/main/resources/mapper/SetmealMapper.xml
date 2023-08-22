@@ -112,6 +112,6 @@
     <select id="selectSetmealList" resultType="com.fzdkx.entity.Setmeal">
         select *
         from setmeal
-        where category_id = #{categoryId}
+        where category_id = #{categoryId} and status = 1;
     </select>
 </mapper>

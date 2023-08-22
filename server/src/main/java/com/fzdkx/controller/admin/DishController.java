@@ -1,5 +1,6 @@
 package com.fzdkx.controller.admin;
 
+import com.fzdkx.redis.RedisUtils;
 import com.fzdkx.vo.DishAndFlavorVO;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.result.Result;
@@ -8,12 +9,16 @@ import com.fzdkx.dto.DishChangeDTO;
 import com.fzdkx.vo.DishPageQueryVO;
 import com.fzdkx.vo.DishVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.fzdkx.constant.RedisConstant.DISH_CATEGORY_PREFIX;
 
 /**
  * @author 发着呆看星
@@ -26,10 +31,13 @@ import java.util.List;
 public class DishController {
     @Resource
     private DishService dishService;
+    @Resource
+    private RedisUtils redisUtils;
 
     @ApiOperation("修改菜品")
     @PutMapping()
     public Result changeDish(@RequestBody DishChangeDTO dishChangeDTO) {
+        redisUtils.deleteKey(DISH_CATEGORY_PREFIX,null);
         dishService.changeDish(dishChangeDTO);
         return Result.success();
     }
@@ -37,6 +45,7 @@ public class DishController {
     @ApiOperation("移除菜品")
     @DeleteMapping()
     public Result removeDish(@RequestParam("ids") List<Long> ids) {
+        redisUtils.deleteKey(DISH_CATEGORY_PREFIX,null);
         dishService.remove(ids);
         return Result.success();
     }
@@ -44,6 +53,7 @@ public class DishController {
     @ApiOperation("添加菜品")
     @PostMapping()
     public Result saveDish(@RequestBody DishChangeDTO dishChangeDTO) {
+        redisUtils.deleteKey(DISH_CATEGORY_PREFIX,dishChangeDTO.getCategoryId().toString());
         dishService.saveDish(dishChangeDTO);
         return Result.success();
     }
@@ -72,6 +82,7 @@ public class DishController {
     @ApiOperation("修改菜品状态")
     @PostMapping("/status/{status}")
     public Result changeStatus(@PathVariable("status") Integer status, Long id) {
+        redisUtils.deleteKey(DISH_CATEGORY_PREFIX,null);
         dishService.changeDishStatus(status, id);
         return Result.success();
     }

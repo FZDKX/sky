@@ -33,35 +33,35 @@ public class CategoryController {
         return Result.success(pageResult);
     }
 
-    @ApiOperation("修改分类或菜品状态")
+    @ApiOperation("修改分类或套餐状态")
     @PostMapping("/status/{status}")
     public Result changeStatus(@PathVariable("status") Integer status, Long id) {
         categoryService.changeStatus(status, id);
         return Result.success();
     }
 
-    @ApiOperation("移除分类或菜品")
+    @ApiOperation("移除分类或套餐")
     @DeleteMapping()
     public Result removeCategory(Integer id) {
         categoryService.removeCategory(id);
         return Result.success();
     }
 
-    @ApiOperation("修改分类或菜品信息")
+    @ApiOperation("修改分类或套餐信息")
     @PutMapping()
     public Result changeCategory(@RequestBody CategoryDTO categoryDTO){
         categoryService.changeCategory(categoryDTO);
         return Result.success();
     }
 
-    @ApiOperation("添加分类或菜品")
+    @ApiOperation("添加分类或套餐")
     @PostMapping()
     public Result saveCategory(@RequestBody CategoryDTO categoryDTO){
         categoryService.saveCategory(categoryDTO);
         return Result.success();
     }
 
-    @ApiOperation("根据类型查询分类或菜品")
+    @ApiOperation("根据类型查询分类或套餐")
     @GetMapping("/list")
     public Result queryCategoryList(Integer type){
         List<Category> categoryList = categoryService.queryCategoryList(type);
