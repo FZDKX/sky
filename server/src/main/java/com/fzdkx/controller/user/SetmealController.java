@@ -6,6 +6,7 @@ import com.fzdkx.service.DishService;
 import com.fzdkx.service.SetmealService;
 import com.fzdkx.vo.DishItemVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +34,14 @@ public class SetmealController {
     private DishService dishService;
 
     @GetMapping("/list")
+    @ApiOperation("根据分类ID查询套餐集合")
     public Result<List<Setmeal>> querySetmealList(Long categoryId){
         List<Setmeal> setmealList = setmealService.querySetmealListByCategory(categoryId);
         return Result.success(setmealList);
     }
 
     @GetMapping("/dish/{id}")
+    @ApiOperation("根据套餐ID查询菜品信息")
     public Result<List<DishItemVO>> querySetmeal(@PathVariable("id") Long id){
         List<DishItemVO> dishItemVOList = dishService.queryDishItemList(id);
         return Result.success(dishItemVOList);
