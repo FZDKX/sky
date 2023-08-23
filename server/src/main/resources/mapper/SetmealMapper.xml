@@ -114,4 +114,14 @@
         from setmeal
         where category_id = #{categoryId} and status = 1;
     </select>
+    <select id="selectSetmealByCategoryId" resultType="java.lang.Integer">
+        select count(*)
+        from setmeal
+        where category_id = #{categoryId}
+    </select>
+    <select id="selectSetmealCartById" resultType="com.fzdkx.dto.GoodsCartDTO">
+        select name , image , price as amount
+        from setmeal
+        where id = #{id}
+    </select>
 </mapper>

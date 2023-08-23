@@ -2,6 +2,7 @@ package com.fzdkx.mapper;
 
 import com.fzdkx.annotion.AutoFill;
 import com.fzdkx.constant.AutoFillType;
+import com.fzdkx.dto.GoodsCartDTO;
 import com.fzdkx.vo.DishAndFlavorVO;
 import com.fzdkx.entity.Dish;
 import com.fzdkx.vo.DishItemVO;
@@ -33,4 +34,8 @@ public interface DishMapper {
     List<DishItemVO> selectDishListBySetmealId(Long setmealId);
 
     List<DishAndFlavorVO> selectDishAndFlavorByCategoryId(@Param("categoryId") Long categoryId);
+
+    Integer selectDishByCategoryId(Integer id);
+
+    GoodsCartDTO selectDishCartById(Long dishId);
 }

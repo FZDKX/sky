@@ -70,6 +70,16 @@
         LEFT JOIN category as c ON d.category_id = c.id
         WHERE c.id = #{categoryId} and d.status = 1
     </select>
+    <select id="selectDishByCategoryId" resultType="java.lang.Integer">
+        select count(*)
+        from dish
+       where category_id = #{categoryId}
+    </select>
+    <select id="selectDishCartById" resultType="com.fzdkx.dto.GoodsCartDTO">
+        select name , image , price as amount
+        from dish
+        where id = #{id}
+    </select>
 
     <update id="updateDish">
         update dish

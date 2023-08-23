@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace先随意写一个-->
+<mapper namespace="com.fzdkx.mapper.ShoppingCartMapper">
+    <insert id="insertCart">
+        insert into shopping_cart
+        (name, image, user_id, dish_id, setmeal_id, dish_flavor, amount, create_time)
+        values
+        (#{name} , #{image} , #{userId} , #{dishId} , #{setmealId} , #{dishFlavor} , #{amount} , #{createTime})
+    </insert>
+    <update id="increNumber">
+        update shopping_cart
+        set number = number + 1
+        <where>
+            <if test="dishFlavor != null">
+                dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </update>
+    <update id="reduceNumber">
+        update shopping_cart
+        set number = number -1
+        <where>
+            <if test="dishFlavor != null">
+                dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteCartAll">
+        delete from shopping_cart
+        where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteCartOne">
+        delete from shopping_cart
+        <where>
+            <choose>
+                <when test="dishFlavor != null">
+                    dish_flavor = #{dishFlavor}
+                </when>
+                <when test="dishId != null">
+                    and dish_id = #{dishId}
+                </when>
+                <when test="setmealId != null">
+                    and setmeal_id = #{setmealId}
+                </when>
+                <when test="userId != null">
+                    and user_id = #{userId}
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+
+    <select id="selectCartExist" resultType="java.lang.Integer">
+        select count(*)
+        from shopping_cart
+        <where>
+            <if test="dishFlavor != null">
+                dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="selectCartList" resultType="com.fzdkx.entity.ShoppingCart">
+        select *
+        from shopping_cart
+        where user_id = #{userId}
+    </select>
+    <select id="selectNumber" resultType="java.lang.Integer">
+        select number
+        from shopping_cart
+        <where>
+            <if test="dishFlavor != null">
+                dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+</mapper>

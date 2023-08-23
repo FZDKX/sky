@@ -2,6 +2,7 @@ package com.fzdkx.mapper;
 
 import com.fzdkx.annotion.AutoFill;
 import com.fzdkx.constant.AutoFillType;
+import com.fzdkx.dto.GoodsCartDTO;
 import com.fzdkx.entity.Setmeal;
 import com.fzdkx.vo.SetmealPageQueryVO;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -36,4 +37,9 @@ public interface SetmealMapper {
     void updateSetmealStatusById(@Param("setmeal") Setmeal setmeal);
 
     List<Setmeal> selectSetmealList(Long categoryId);
+
+    Integer selectSetmealByCategoryId(Integer id);
+
+    GoodsCartDTO selectSetmealCartById(Long setmealId);
+
 }

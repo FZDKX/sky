@@ -1,23 +1,24 @@
 package com.fzdkx.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fzdkx.dto.CategoryDTO;
 import com.fzdkx.dto.CategoryPageQueryDTO;
 import com.fzdkx.entity.Category;
+import com.fzdkx.exception.DeleteException;
+import com.fzdkx.exception.ParamException;
 import com.fzdkx.mapper.CategoryMapper;
+import com.fzdkx.mapper.DishMapper;
+import com.fzdkx.mapper.SetmealMapper;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.service.CategoryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.fzdkx.constant.RedisConstant.CATEGORY_KEY;
+import static com.fzdkx.constant.MessageConstant.*;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 
 /**
@@ -26,10 +27,15 @@ import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
  */
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    @Resource
-    private StringRedisTemplate template;
+
     @Resource
     private CategoryMapper categoryMapper;
+
+    @Resource
+    private DishMapper dishMapper;
+
+    @Resource
+    private SetmealMapper setmealMapper;
 
     @Override
     public PageResult<Category> pageQueryCategory(CategoryPageQueryDTO categoryPageQueryDTO) {
@@ -58,6 +64,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void removeCategory(Integer id) {
+
+        if (id == null){
+            throw new ParamException(PARAM_IS_ERROR);
+        }
+
+        //查询分类关联菜品
+        Integer count = dishMapper.selectDishByCategoryId(id);
+
+        if (count != null && count > 0){
+            throw new DeleteException(DELETE_IS_NO);
+        }
+        // 查询关联套餐
+        count = setmealMapper.selectSetmealByCategoryId(id);
+
+        if (count != null && count > 0){
+            throw new DeleteException(DELETE_IS_NO);
+        }
+
+        // 删除分类
         categoryMapper.deleteCategory(id);
     }
 
