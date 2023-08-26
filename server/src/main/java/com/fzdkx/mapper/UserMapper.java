@@ -10,4 +10,6 @@ public interface UserMapper {
     User selectUserByOpenid(String openId);
 
     void insert(User user);
+
+    User getById(Long userId);
 }

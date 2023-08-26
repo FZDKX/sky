@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace先随意写一个-->
+<mapper namespace="com.fzdkx.mapper.OrderDetailMapper">
+
+    <insert id="insertList">
+        insert into order_detail
+        (name, image, order_id, dish_id, setmeal_id, dish_flavor, amount)
+        values 
+        <foreach collection="list" item="detail" separator=",">
+            (#{detail.name} , #{detail.image} , #{detail.orderId} , #{detail.dishId} , #{detail.setmealId} , #{detail.dishFlavor} , #{detail.amount})
+        </foreach>
+    </insert>
+
+    <select id="selectByOrderId" resultType="com.fzdkx.entity.OrderDetail">
+        select *
+        from order_detail
+        where order_id = #{ordrId}
+    </select>
+</mapper>

@@ -3,15 +3,15 @@ spring:
     active: dev   #环境设置 dev，开发环境
   datasource:
     druid:
-      driver-class-name: ${sky.datasource.driver-class-name}
-      url: ${sky.datasource.url}
-      username: ${sky.datasource.username}
-      password: ${sky.datasource.password}
+      driver-class-name: ${mysky.datasource.driver-class-name}
+      url: ${mysky.datasource.url}
+      username: ${mysky.datasource.username}
+      password: ${mysky.datasource.password}
   redis:
-    host: ${sky.redis.host}
-    port: ${sky.redis.port}
-    database: ${sky.redis.database}
-    password: ${sky.redis.password}
+    host: ${mysky.redis.host}
+    port: ${mysky.redis.port}
+    database: ${mysky.redis.database}
+    password: ${mysky.redis.password}
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -27,10 +27,20 @@ sky:
     admin-token-name: token
     user-token-name: authentication
   oos:
-    endpoint: ${sky.oos.endpoint}
-    access-key-id: ${sky.oos.access-key-id}
-    access-key-secret: ${sky.oos.access-key-secret}
-    bucket-name: ${sky.oos.bucket-name}
+    endpoint: ${mysky.oos.endpoint}
+    access-key-id: ${mysky.oos.access-key-id}
+    access-key-secret: ${mysky.oos.access-key-secret}
+    bucket-name: ${mysky.oos.bucket-name}
   wechat:
-    appid: ${sky.wx.appid}
-    secret: ${sky.wx.secret}
+    appid: ${mysky.wx.appid}
+    secret: ${mysky.wx.secret}
+#    mchid: ${mysky.wx.mchid}
+#    mchSerialNo: ${mysky.wx.mchSerialNo}
+#    privateKeyFilePath: ${mysky.wx.privateKeyFilePath}
+#    apiV3Key: ${mysky.wx.apiV3Key}
+#    weChatPayCertFilePath: ${mysky.wx.weChatPayCertFilePath}
+#    notifyUrl: ${mysky.wx.notifyUrl}
+#    refundNotifyUrl: ${mysky.wx.refundNotifyUrl}
+  baidu:
+    ak: ${mysky.baidu.ak}
+    shop-address: ${mysky.baidu.shop-address}

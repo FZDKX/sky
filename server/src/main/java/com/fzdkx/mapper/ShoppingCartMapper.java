@@ -17,11 +17,13 @@ public interface ShoppingCartMapper {
 
     List<ShoppingCart> selectCartList(Long userId);
 
-    void deleteCartAll(Long id);
+    void deleteCartAll(Long userId);
 
     void deleteCartOne(ShoppingCart cart);
 
     Integer selectNumber(ShoppingCart cart);
 
     void reduceNumber(ShoppingCart cart);
+
+    void insertCartList(List<ShoppingCart> carts);
 }
