@@ -2,10 +2,9 @@ package com.fzdkx.service;
 
 import com.fzdkx.dto.*;
 import com.fzdkx.result.PageResult;
-import com.fzdkx.vo.FindOrderVO;
-import com.fzdkx.vo.OrderPaymentVO;
-import com.fzdkx.vo.OrderSubmitVO;
-import com.fzdkx.vo.OrderVO;
+import com.fzdkx.vo.*;
+
+import java.time.LocalDate;
 
 /**
  * @author 发着呆看星
@@ -51,4 +50,7 @@ public interface OrderService {
 
     StatisticsVO statistics();
 
+    TurnoverVO turnoverStatistics(LocalDate begin, LocalDate end);
+
+    OrdersStatisticsVO ordersStatistics(LocalDate begin, LocalDate end);
 }

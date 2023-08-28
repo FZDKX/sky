@@ -13,15 +13,22 @@ import com.fzdkx.properties.WeChatProperties;
 import com.fzdkx.service.UserService;
 import com.fzdkx.utils.HttpClientUtil;
 import com.fzdkx.utils.JwtUtil;
+import com.fzdkx.utils.LocalDateUtils;
 import com.fzdkx.utils.UserThreadLocal;
 import com.fzdkx.vo.UserLoginVO;
+import com.fzdkx.vo.UserStatisticsVO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -95,6 +102,28 @@ public class UserServiceImpl implements UserService {
         if (flag == null || !flag){
             throw new LogoutException(LOGOUT_ERROR);
         }
+    }
+
+    @Override
+    public UserStatisticsVO userStatistics(LocalDate begin, LocalDate end) {
+        // 获取日期集合
+        List<LocalDate> dateList = LocalDateUtils.getDateList(begin, end);
+        // 根据对应日期查询用户
+        List<Integer> totalUserList = new ArrayList<>();
+        List<Integer> newUserList = new ArrayList<>();
+        for (LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            // 查询总用户
+            Integer total = userMapper.selectTotalUser(endTime);
+            totalUserList.add(total);
+            // 查询新增用户
+            Integer newTotal = userMapper.selectNewUser(beginTime,endTime);
+            newUserList.add(newTotal);
+        }
+        return new UserStatisticsVO(StringUtils.join(dateList,","),
+                                    StringUtils.join(newUserList,","),
+                                    StringUtils.join(totalUserList,","));
     }
 
     public String getOpenId(String code){

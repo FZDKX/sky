@@ -6,6 +6,7 @@ import com.fzdkx.entity.Order;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,9 +43,11 @@ public interface OrderMapper {
 
     List<Order> selectOrderList(FindOrderDTO findOrderDTO);
 
-    Integer selectConfirmed();
+    BigDecimal selectTurnover(@Param("begin") LocalDateTime begin,@Param("end") LocalDateTime end);
 
-    Integer selectDeliveryInProgress();
+    Integer ordersStatistics(@Param("begin") LocalDateTime beginTime,
+                             @Param("end") LocalDateTime endTime,
+                             @Param("status") Integer status);
 
-    Integer selectToBeConfirmed();
+    Integer selectByStatus(Integer status);
 }

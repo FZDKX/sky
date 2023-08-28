@@ -25,7 +25,7 @@ public interface CategoryService {
     /**
      * 根据ID删除分类
      */
-    void removeCategory(Integer id);
+    void removeCategory(Long id);
 
     /**
      * 修改分类信息

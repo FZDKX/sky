@@ -1,6 +1,9 @@
 package com.fzdkx.service;
 
 import com.fzdkx.vo.UserLoginVO;
+import com.fzdkx.vo.UserStatisticsVO;
+
+import java.time.LocalDate;
 
 /**
  * @author 发着呆看星
@@ -10,4 +13,6 @@ public interface UserService {
     UserLoginVO wxLogin(String code);
 
     void wxLogout();
+
+    UserStatisticsVO userStatistics(LocalDate begin, LocalDate end);
 }

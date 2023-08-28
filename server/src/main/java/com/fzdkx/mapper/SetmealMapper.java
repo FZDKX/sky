@@ -38,8 +38,11 @@ public interface SetmealMapper {
 
     List<Setmeal> selectSetmealList(Long categoryId);
 
-    Integer selectSetmealByCategoryId(Integer id);
+    Integer selectSetmealByCategoryId(Long id);
 
     GoodsCartDTO selectSetmealCartById(Long setmealId);
 
+    Integer selectByStatus(Integer status);
+
+    Integer selectByCategoryId(Long id);
 }

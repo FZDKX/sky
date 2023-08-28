@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.fzdkx.constant.MessageConstant.*;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
+import static com.fzdkx.constant.SqlConstant.USER_LOCK;
 
 /**
  * @author 发着呆看星
@@ -63,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void removeCategory(Integer id) {
+    public void removeCategory(Long id) {
 
         if (id == null){
             throw new ParamException(PARAM_IS_ERROR);
@@ -105,6 +107,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> queryCategoryList(Integer type) {
         // 查询数据库
-        return categoryMapper.selectCategoryList(type);
+        List<Category> categoryList = categoryMapper.selectCategoryList(type);
+        categoryList = categoryList.stream().filter(category -> {
+            Long id = category.getId();
+            Integer dish = dishMapper.selectByCategoryId(id);
+            Integer setmeal = setmealMapper.selectByCategoryId(id);
+            return (dish != null && dish > 0) || (setmeal != null && setmeal > 0);
+        }).collect(Collectors.toList());
+        return categoryList;
     }
 }

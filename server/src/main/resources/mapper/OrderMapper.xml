@@ -53,14 +53,12 @@
     <select id="selectPayTimout" resultType="long">
         select id
         from orders
-        where order_time &lt; #{timeout}
-          and status = #{1}
+        where order_time &lt; #{timeout} and status = #{1}
     </select>
     <select id="selectDeliveryOrder" resultType="java.lang.Long">
         select id
         from orders
-        where status = 4
-          and order_time &lt;= #{now}
+        where status = 4 and order_time &lt;= #{now}
     </select>
     <select id="selectOrder" resultType="com.fzdkx.entity.Order">
         select *
@@ -73,46 +71,69 @@
         from orders
         <where>
             <if test="status != null">
-                status = #{status} and
+                status = #{status}
             </if>
-            user_id = #{userId}
+            and user_id = #{userId}
         </where>
+        order by order_time desc
     </select>
     <select id="selectOrderList" resultType="com.fzdkx.entity.Order">
         select *
         from orders
         <where>
             <if test="beginTime != null">
-                #{beginTime} &lt; order_time
+                and #{beginTime} &lt; order_time
             </if>
             <if test="endTime != null">
-                order_time &lt; #{endTime}
+                and order_time &lt; #{endTime}
             </if>
             <if test="number != null">
-                number like concat('%',#{number},'%')
+                and number like concat('%',#{number},'%')
             </if>
             <if test="phone != null">
-                phone like concat('%',#{phone},'%')
+                and phone like concat('%',#{phone},'%')
             </if>
             <if test="status != null">
-                status = #{status}
+                and status = #{status}
             </if>
         </where>
         order by order_Time desc
     </select>
-    <select id="selectConfirmed" resultType="java.lang.Integer">
-        select count(*)
+    <select id="selectTurnover" resultType="bigDecimal">
+        select sum(amount)
         from orders
-        where status = 3
+        <where>
+            <if test="begin != null">
+                order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and  order_time &lt; #{end}
+            </if>
+            and status = 5
+        </where>
     </select>
-    <select id="selectDeliveryInProgress" resultType="java.lang.Integer">
-        select count(*)
+    <select id="ordersStatistics" resultType="java.lang.Integer">
+        select count(id)
         from orders
-        where status = 4
+        <where>
+            <if test="begin != null">
+                order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
     </select>
-    <select id="selectToBeConfirmed" resultType="java.lang.Integer">
-        select count(*)
+    <select id="selectByStatus" resultType="java.lang.Integer">
+        select count(id)
         from orders
-        where status = 2
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
     </select>
 </mapper>

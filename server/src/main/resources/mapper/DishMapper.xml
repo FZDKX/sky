@@ -73,12 +73,26 @@
     <select id="selectDishByCategoryId" resultType="java.lang.Integer">
         select count(*)
         from dish
-       where category_id = #{categoryId}
+        where category_id = #{categoryId}
     </select>
     <select id="selectDishCartById" resultType="com.fzdkx.dto.GoodsCartDTO">
         select name , image , price as amount
         from dish
         where id = #{id}
+    </select>
+    <select id="selectByStatus" resultType="java.lang.Integer">
+        select count(id)
+        from dish
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCategoryId" resultType="java.lang.Integer">
+        select count(id)
+        from dish
+        where status = 1 and category_id = #{id}
     </select>
 
     <update id="updateDish">

@@ -42,7 +42,7 @@ public class CategoryController {
 
     @ApiOperation("移除分类或套餐")
     @DeleteMapping()
-    public Result removeCategory(Integer id) {
+    public Result removeCategory(Long id) {
         categoryService.removeCategory(id);
         return Result.success();
     }

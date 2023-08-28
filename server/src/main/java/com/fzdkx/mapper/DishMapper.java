@@ -35,7 +35,11 @@ public interface DishMapper {
 
     List<DishAndFlavorVO> selectDishAndFlavorByCategoryId(@Param("categoryId") Long categoryId);
 
-    Integer selectDishByCategoryId(Integer id);
+    Integer selectDishByCategoryId(Long id);
 
     GoodsCartDTO selectDishCartById(Long dishId);
+
+    Integer selectByStatus(Integer status);
+
+    Integer selectByCategoryId(Long id);
 }

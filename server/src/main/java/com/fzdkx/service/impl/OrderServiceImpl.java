@@ -17,20 +17,22 @@ import com.fzdkx.properties.BaiDuProperties;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.service.OrderService;
 import com.fzdkx.utils.HttpClientUtil;
+import com.fzdkx.utils.LocalDateUtils;
 import com.fzdkx.utils.UserThreadLocal;
-import com.fzdkx.vo.FindOrderVO;
-import com.fzdkx.vo.OrderPaymentVO;
-import com.fzdkx.vo.OrderSubmitVO;
-import com.fzdkx.vo.OrderVO;
+import com.fzdkx.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -372,11 +374,64 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public StatisticsVO statistics() {
-        Integer confirmed = orderMapper.selectConfirmed();
-        Integer deliveryInProgress = orderMapper.selectDeliveryInProgress();
-        Integer toBeConfirmed = orderMapper.selectToBeConfirmed();
+        Integer confirmed = orderMapper.selectByStatus(RECEIVE_ORDER);
+        Integer deliveryInProgress = orderMapper.selectByStatus(SHIPMENT);
+        Integer toBeConfirmed = orderMapper.selectByStatus(WAIT_ORDER);
         return new StatisticsVO(confirmed, deliveryInProgress, toBeConfirmed);
     }
+
+    @Override
+    public TurnoverVO turnoverStatistics(LocalDate begin, LocalDate end) {
+        // 根据日期，计算出日期列表
+        List<LocalDate> dates = LocalDateUtils.getDateList(begin,end);
+        // 根据日期，查询营业额
+        List<BigDecimal> turnoverList = new ArrayList<>();
+        for (LocalDate date : dates) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            BigDecimal turnover = orderMapper.selectTurnover(beginTime, endTime);
+            if (turnover == null){
+                turnover = new BigDecimal("0.00");
+            }
+            turnoverList.add(turnover);
+        }
+        // 封装数据
+        return new TurnoverVO(StringUtils.join(dates,","),StringUtils.join(turnoverList,","));
+    }
+
+    @Override
+    public OrdersStatisticsVO ordersStatistics(LocalDate begin, LocalDate end) {
+        // 获取日期集合
+        List<LocalDate> dateList = LocalDateUtils.getDateList(begin, end);
+        // 获取对应日期的订单数据
+        List<Integer> totalOrder = new ArrayList<>();
+        List<Integer> validOrder = new ArrayList<>();
+        for (LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            // 查询当日所有订单
+            Integer total = orderMapper.ordersStatistics(beginTime,endTime,null);
+            totalOrder.add(total);
+            // 查询当日有效订单
+            Integer valid = orderMapper.ordersStatistics(beginTime, endTime, 5);
+            validOrder.add(valid);
+        }
+        // 获取订单总数 ，有效订单总数 ，订单完成率
+        Integer total = totalOrder.stream().reduce(Integer::sum).get();
+        Integer valid = validOrder.stream().reduce(Integer::sum).get();
+        double orderCompletionRate = 0.0;
+        if (!total.equals(0)){
+            orderCompletionRate = valid.doubleValue() / total;
+        }
+        return new OrdersStatisticsVO(
+                StringUtils.join(dateList,","),
+                StringUtils.join(totalOrder,","),
+                StringUtils.join(validOrder,","),
+                orderCompletionRate,
+                total,
+                valid);
+    }
+
 
     private List<FindOrderVO> getVOList(List<Order> orders) {
         List<FindOrderVO> list = new ArrayList<>();
@@ -426,7 +481,11 @@ public class OrderServiceImpl implements OrderService {
         }
         JSONObject shopLocation = shopJsonObject.getJSONObject("result").getJSONObject("location");
         String shopLat = shopLocation.getString("lat");
+        int index = shopLat.lastIndexOf(".");
+        shopLat = shopLat.substring(0,index+7);
         String shopLng = shopLocation.getString("lng");
+        index = shopLng.lastIndexOf(".");
+        shopLng = shopLng.substring(0,index+7);
         String shopLngLat = shopLat + "," + shopLng;
 
 
@@ -439,7 +498,11 @@ public class OrderServiceImpl implements OrderService {
         }
         JSONObject userLocation = userJsonObject.getJSONObject("result").getJSONObject("location");
         String userLat = userLocation.getString("lat");
+        index = userLat.lastIndexOf(".");
+        userLat = userLat.substring(0,index+7);
         String userLng = userLocation.getString("lng");
+        index = userLng.lastIndexOf(".");
+        userLng = userLng.substring(0,index+7);
         String userLngLat = userLat + "," + userLng;
 
         // 路线规划
@@ -447,7 +510,8 @@ public class OrderServiceImpl implements OrderService {
         hashMap.put("ak",ak);
         hashMap.put("origin",shopLngLat);
         hashMap.put("destination",userLngLat);
-        String json = HttpClientUtil.doGet("https://api.map.baidu.com/directionlite/v1/driving", map);
+        hashMap.put("steps_info","0");
+        String json = HttpClientUtil.doGet("https://api.map.baidu.com/directionlite/v1/driving", hashMap);
 
         JSONObject jsonObject = JSON.parseObject(json);
         if (!jsonObject.getString("status").equals("0")) {

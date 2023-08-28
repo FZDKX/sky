@@ -89,10 +89,10 @@
                 s.category_id = #{categoryId}
             </if>
             <if test="name != null">
-                s.name like concat('%',#{name},'%')
+                and s.name like concat('%',#{name},'%')
             </if>
             <if test="status != null">
-                s.status = #{status}
+                and s.status = #{status}
             </if>
         </where>
     </select>
@@ -115,7 +115,7 @@
         where category_id = #{categoryId} and status = 1;
     </select>
     <select id="selectSetmealByCategoryId" resultType="java.lang.Integer">
-        select count(*)
+        select count(id)
         from setmeal
         where category_id = #{categoryId}
     </select>
@@ -123,5 +123,19 @@
         select name , image , price as amount
         from setmeal
         where id = #{id}
+    </select>
+    <select id="selectByStatus" resultType="java.lang.Integer">
+        select count(id)
+        from setmeal
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCategoryId" resultType="java.lang.Integer">
+        select count(id)
+        from setmeal
+        where status = 1 and category_id = #{id}
     </select>
 </mapper>

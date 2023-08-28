@@ -19,4 +19,21 @@
         from order_detail
         where order_id = #{ordrId}
     </select>
+
+    <select id="selectTop10" resultType="com.fzdkx.dto.GoodsSalesDTO">
+        select od.name , sum(od.number) as sales
+        from order_detail as od
+        join orders as o on od.order_id = o.id
+        where
+        o.status = 5
+        <if test="begin != null">
+            and o.order_time &gt; #{begin}
+        </if>
+        <if test="end != null">
+            and o.order_time &lt; #{end}
+        </if>
+        group by od.name
+        order by sales desc
+        limit 0,10
+    </select>
 </mapper>

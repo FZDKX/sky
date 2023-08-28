@@ -8,5 +8,6 @@ public class SqlConstant {
     public static final Integer USER_UNLOCK = 1;
     public static final Integer USER_LOCK = 0;
     public static final Integer DEFAULT_STATUS = 1;
+    public static final Integer LOCK_STATUS = 0;
     public static final String DEFAULT_PASSWORD = "123456";
 }

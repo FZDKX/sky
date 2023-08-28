@@ -17,7 +17,7 @@ public interface CategoryMapper {
 
     List<Category> pageSelectCategory(CategoryPageQueryDTO categoryPageQueryDTO);
 
-    void deleteCategory(@Param("id") Integer id);
+    void deleteCategory(@Param("id") Long id);
 
     @AutoFill(AutoFillType.UPDATE)
     void updateCategory(Category category);
