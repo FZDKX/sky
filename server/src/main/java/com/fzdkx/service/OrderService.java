@@ -4,6 +4,7 @@ import com.fzdkx.dto.*;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.vo.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 /**
@@ -53,4 +54,7 @@ public interface OrderService {
     TurnoverVO turnoverStatistics(LocalDate begin, LocalDate end);
 
     OrdersStatisticsVO ordersStatistics(LocalDate begin, LocalDate end);
+
+    void export(HttpServletResponse response);
+
 }

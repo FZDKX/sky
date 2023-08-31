@@ -8,7 +8,6 @@ import com.fzdkx.constant.MessageConstant;
 import com.fzdkx.controller.websocket.MyWebSocketServer;
 import com.fzdkx.dto.*;
 import com.fzdkx.entity.*;
-import com.fzdkx.exception.BaseException;
 import com.fzdkx.exception.OrderBusinessException;
 import com.fzdkx.exception.ParamException;
 import com.fzdkx.exception.SqlException;
@@ -16,6 +15,7 @@ import com.fzdkx.mapper.*;
 import com.fzdkx.properties.BaiDuProperties;
 import com.fzdkx.result.PageResult;
 import com.fzdkx.service.OrderService;
+import com.fzdkx.service.WorkSpaceService;
 import com.fzdkx.utils.HttpClientUtil;
 import com.fzdkx.utils.LocalDateUtils;
 import com.fzdkx.utils.UserThreadLocal;
@@ -24,11 +24,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -60,6 +67,8 @@ public class OrderServiceImpl implements OrderService {
     private MyWebSocketServer myWebSocketServer;
     @Resource
     private BaiDuProperties baiDuProperties;
+    @Resource
+    private WorkSpaceService workSpaceService;
 
     @Override
     @Transactional
@@ -83,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 向订单表中插入一条数据
         Order order = builder()
-                .number(UUID.randomUUID().toString())
+                .number(UUID.randomUUID().toString().replace("-",""))
                 .status(NO_PAY)
                 .userId(userId)
                 .orderTime(LocalDateTime.now())
@@ -430,6 +439,62 @@ public class OrderServiceImpl implements OrderService {
                 orderCompletionRate,
                 total,
                 valid);
+    }
+
+    @Override
+    public void export(HttpServletResponse response) {
+        // 获取Excel
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("template/运营数据报表模板.xlsx");
+        LocalDate now = LocalDate.now();
+        LocalDate endDate = now.minusDays(1);
+        LocalDate beginDate = now.minusDays(30);
+        XSSFWorkbook excel;
+        try {
+            excel = new XSSFWorkbook(in);
+            XSSFSheet sheet = excel.getSheet("sheet1");
+            // 填充时间
+            sheet.getRow(1).getCell(1).setCellValue(beginDate + "至" + endDate);
+            // 获取前三十天统计结果
+            BusinessDataVO businessDataVO = workSpaceService.businessData(LocalDateTime.of(beginDate, LocalTime.MIN),
+                                                                            LocalDateTime.of(endDate, LocalTime.MAX));
+            // 填充概览数据
+            XSSFRow row3 = sheet.getRow(3);
+            row3.getCell(2).setCellValue(businessDataVO.getTurnover().doubleValue());
+            row3.getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+            row3.getCell(6).setCellValue(businessDataVO.getNewUsers());
+            XSSFRow row4 = sheet.getRow(4);
+            row4.getCell(2).setCellValue(businessDataVO.getValidOrderCount());
+            row4.getCell(4).setCellValue(businessDataVO.getUnitPrice().doubleValue());
+
+            // 遍历每一天，填充明细数据
+            LocalDate date = beginDate;
+            for (int i = 0; i < 30; i++) {
+                // 获取每一天
+                date = date.plusDays(i);
+                // 获取每一天的统计结果
+                BusinessDataVO businessData = workSpaceService.businessData(LocalDateTime.of(date, LocalTime.MIN),
+                                                                            LocalDateTime.of(date, LocalTime.MAX));
+                // 填充数据
+                XSSFRow row = sheet.getRow(7 + i);
+                row.getCell(1).setCellValue(date.toString());
+                row.getCell(2).setCellValue(businessData.getTurnover().doubleValue());
+                row.getCell(3).setCellValue(businessData.getValidOrderCount());
+                row.getCell(4).setCellValue(businessData.getOrderCompletionRate());
+                row.getCell(5).setCellValue(businessData.getUnitPrice().doubleValue());
+                row.getCell(6).setCellValue(businessData.getNewUsers());
+            }
+            //将Excel表格想要给客户端
+            ServletOutputStream out = response.getOutputStream();
+            excel.write(out);
+
+            // 关闭资源
+            out.close();
+            excel.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 

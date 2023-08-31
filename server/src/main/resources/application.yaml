@@ -27,13 +27,13 @@ sky:
     admin-token-name: token
     user-token-name: authentication
   oos:
-    endpoint: ${mysky.oos.endpoint}
-    access-key-id: ${mysky.oos.access-key-id}
-    access-key-secret: ${mysky.oos.access-key-secret}
-    bucket-name: ${mysky.oos.bucket-name}
+    endpoint: ${mysky.alioss.endpoint}
+    access-key-id: ${mysky.alioss.access-key-id}
+    access-key-secret: ${mysky.alioss.access-key-secret}
+    bucket-name: ${mysky.alioss.bucket-name}
   wechat:
-    appid: ${mysky.wx.appid}
-    secret: ${mysky.wx.secret}
+    appid: ${mysky.wechat.appid}
+    secret: ${mysky.wechat.secret}
 #    mchid: ${mysky.wx.mchid}
 #    mchSerialNo: ${mysky.wx.mchSerialNo}
 #    privateKeyFilePath: ${mysky.wx.privateKeyFilePath}

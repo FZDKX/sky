@@ -64,7 +64,7 @@ public class CategoryController {
     @ApiOperation("根据类型查询分类或套餐")
     @GetMapping("/list")
     public Result queryCategoryList(Integer type){
-        List<Category> categoryList = categoryService.queryCategoryList(type);
+        List<Category> categoryList = categoryService.queryCategoryListAll(type);
         return Result.success(categoryList);
     }
 }

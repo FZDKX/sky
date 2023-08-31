@@ -116,4 +116,9 @@ public class CategoryServiceImpl implements CategoryService {
         }).collect(Collectors.toList());
         return categoryList;
     }
+
+    @Override
+    public List<Category> queryCategoryListAll(Integer type) {
+        return categoryMapper.selectCategoryList(type);
+    }
 }

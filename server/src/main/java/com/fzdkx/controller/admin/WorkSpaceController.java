@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @author 发着呆看星
@@ -25,7 +28,10 @@ public class WorkSpaceController {
 
     @GetMapping("/businessData")
     public Result<BusinessDataVO> businessData(){
-        BusinessDataVO businessDataVO = workSpaceService.businessData();
+        LocalDate now = LocalDate.now();
+        LocalDateTime begin = LocalDateTime.of(now, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(now, LocalTime.MAX);
+        BusinessDataVO businessDataVO = workSpaceService.businessData(begin,end);
         return Result.success(businessDataVO);
     }
 

@@ -41,4 +41,6 @@ public interface CategoryService {
      * 根据类型查询分类集合
      */
     List<Category> queryCategoryList(Integer type);
+
+    List<Category> queryCategoryListAll(Integer type);
 }

@@ -1,6 +1,5 @@
 package com.fzdkx.controller.admin;
 
-import com.fzdkx.entity.OrderDetail;
 import com.fzdkx.result.Result;
 import com.fzdkx.service.OrderDetailService;
 import com.fzdkx.service.OrderService;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 /**
@@ -71,4 +71,9 @@ public class ReportController {
         return Result.success(top10VO);
     }
 
+
+    @GetMapping("/export")
+    public void export(HttpServletResponse response){
+        orderService.export(response);
+    }
 }

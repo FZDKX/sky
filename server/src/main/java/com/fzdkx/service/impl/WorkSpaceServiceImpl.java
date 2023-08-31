@@ -10,15 +10,12 @@ import com.fzdkx.vo.BusinessDataVO;
 import com.fzdkx.vo.OverviewDishesVO;
 import com.fzdkx.vo.OverviewOrdersVO;
 import com.fzdkx.vo.OverviewSetmealsVO;
-import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
 import static com.fzdkx.constant.SqlConstant.LOCK_STATUS;
@@ -41,40 +38,48 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     private DishMapper dishMapper;
 
     @Override
-    public BusinessDataVO businessData() {
-        LocalDate now = LocalDate.now();
-        LocalDateTime begin = LocalDateTime.of(now, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(now, LocalTime.MAX);
+    public BusinessDataVO businessData(LocalDateTime begin ,LocalDateTime end) {
         // 获取当日新增用户数
         Integer newUser = userMapper.selectNewUser(begin, end);
         // 获取当日有效订单数
         Integer valid = orderMapper.ordersStatistics(begin, end, Order.SUCCESS);
         // 获取当日总订单数
         Integer total = orderMapper.ordersStatistics(begin, end, null);
-        // 获取当日订单完成率
+
         double orderCompletionRate = 0.0;
-        if (total != null){
+        // 如果总订单不为0
+        if (!total.equals(0)) {
+            // 获取当日订单完成率
             orderCompletionRate = valid.doubleValue() / total;
         }
-        // 获取当日营业额
-        BigDecimal turnover = orderMapper.selectTurnover(begin, end);
-        // 获取当日平均客单价
-        BigDecimal avgPrice = turnover.divide(new BigDecimal(valid),2, RoundingMode.HALF_UP);
-        return new BusinessDataVO(newUser,orderCompletionRate,turnover,avgPrice,valid);
+
+        BigDecimal turnover = new BigDecimal("0.00");
+        BigDecimal avgPrice = new BigDecimal("0.00");
+
+        // 如果有效订单数不为0
+        if (!valid.equals(0)) {
+            // 获取当日营业额
+            turnover = orderMapper.selectTurnover(begin, end);
+
+            // 获取当日平均客单价
+            avgPrice = turnover.divide(new BigDecimal(valid), 2, RoundingMode.HALF_UP);
+
+        }
+        return new BusinessDataVO(newUser, orderCompletionRate, turnover, avgPrice, valid);
     }
 
     @Override
     public OverviewSetmealsVO overviewSetmeals() {
         Integer unlock = setmealMapper.selectByStatus(DEFAULT_STATUS);
         Integer lock = setmealMapper.selectByStatus(LOCK_STATUS);
-        return new OverviewSetmealsVO(lock,unlock);
+        return new OverviewSetmealsVO(lock, unlock);
     }
 
     @Override
     public OverviewDishesVO overviewDishes() {
         Integer unlock = dishMapper.selectByStatus(DEFAULT_STATUS);
         Integer lock = dishMapper.selectByStatus(LOCK_STATUS);
-        return new OverviewDishesVO(lock,unlock);
+        return new OverviewDishesVO(lock, unlock);
     }
 
     @Override
@@ -89,6 +94,6 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         Integer deliveredOrders = orderMapper.selectByStatus(RECEIVE_ORDER);
         // 查询待接单订单
         Integer waitingOrders = orderMapper.selectByStatus(WAIT_ORDER);
-        return new OverviewOrdersVO(allOrders,cancelledOrders,completedOrders,deliveredOrders,waitingOrders);
+        return new OverviewOrdersVO(allOrders, cancelledOrders, completedOrders, deliveredOrders, waitingOrders);
     }
 }
