@@ -8,10 +8,8 @@ import com.fzdkx.result.Result;
 import com.fzdkx.service.SetmealService;
 import com.fzdkx.vo.SetmealPageQueryVO;
 import com.fzdkx.vo.SetmealVO;
-import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

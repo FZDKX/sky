@@ -467,10 +467,9 @@ public class OrderServiceImpl implements OrderService {
             row4.getCell(4).setCellValue(businessDataVO.getUnitPrice().doubleValue());
 
             // 遍历每一天，填充明细数据
-            LocalDate date = beginDate;
             for (int i = 0; i < 30; i++) {
                 // 获取每一天
-                date = date.plusDays(i);
+                LocalDate date = beginDate.plusDays(i);
                 // 获取每一天的统计结果
                 BusinessDataVO businessData = workSpaceService.businessData(LocalDateTime.of(date, LocalTime.MIN),
                                                                             LocalDateTime.of(date, LocalTime.MAX));
