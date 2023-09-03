@@ -19,9 +19,9 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fzdkx.constant.MessageConstant.*;
+import static com.fzdkx.constant.MessageConstant.DELETE_IS_NO;
+import static com.fzdkx.constant.MessageConstant.PARAM_IS_ERROR;
 import static com.fzdkx.constant.SqlConstant.DEFAULT_STATUS;
-import static com.fzdkx.constant.SqlConstant.USER_LOCK;
 
 /**
  * @author 发着呆看星
@@ -44,9 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 设置分页信息
         PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
-        List<Category> categories;
         // 执行查询语句
-        categories = categoryMapper.pageSelectCategory(categoryPageQueryDTO);
+        List<Category> categories = categoryMapper.pageSelectCategory(categoryPageQueryDTO);
         // 对查询结果进行分页
         PageInfo<Category> categoryPageInfo = new PageInfo<>(categories);
         // 获取分页信息

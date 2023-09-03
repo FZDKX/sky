@@ -31,10 +31,8 @@
 		<aliyun.sdk.oss>3.10.2</aliyun.sdk.oss>
 		<knife4j>3.0.2</knife4j>
 		<aspectj>1.9.4</aspectj>
-		<jjwt>0.9.1</jjwt>
 		<jaxb-api>2.3.1</jaxb-api>
 		<poi>3.16</poi>
-		<security>2.7.14</security>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -104,12 +102,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt</artifactId>
-				<version>${jjwt}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>com.aliyun.oss</groupId>
 				<artifactId>aliyun-sdk-oss</artifactId>
 				<version>${aliyun.sdk.oss}</version>
@@ -137,11 +129,6 @@
 				<groupId>com.github.wechatpay-apiv3</groupId>
 				<artifactId>wechatpay-apache-httpclient</artifactId>
 				<version>0.4.8</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-security</artifactId>
-				<version>${security}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
