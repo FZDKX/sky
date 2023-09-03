@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
         // 1. 校验地址簿
         AddressBook addressBook = addressBookMapper.selectAddressById(orderSubmitDTO.getAddressBookId());
         if (addressBook == null) {
-            throw new ParamException(MessageConstant.PARAM_IS_ERROR);
+            throw new ParamException(MessageConstant.ADDRESS_ERROR);
         }
 
         checkOutOfRange(addressBook.getProvinceName() + addressBook.getCityName() +
@@ -124,7 +124,6 @@ public class OrderServiceImpl implements OrderService {
                 .orderNumber(order.getNumber())
                 .orderAmount(order.getAmount())
                 .orderTime(order.getOrderTime()).build();
-
     }
 
     /**
@@ -252,9 +251,6 @@ public class OrderServiceImpl implements OrderService {
         String address = getAddress(order.getAddressBookId());
         // 获取订单详细信息
         List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(order.getId());
-        for (OrderDetail orderDetail : orderDetails) {
-
-        }
         // 封装VO对象
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order, orderVO);
@@ -290,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
         PageHelper.startPage(findOrderDTO.getPage(), findOrderDTO.getPageSize());
         List<Order> orders = orderMapper.selectOrderList(findOrderDTO);
         if (orders == null || orders.size() == 0) {
-            new PageResult<>();
+           return new PageResult<>();
         }
         PageInfo<Order> pageInfo = new PageInfo<>(orders);
         List<FindOrderVO> orderVOList = getVOList(orders);
@@ -492,8 +488,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
 

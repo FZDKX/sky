@@ -1,7 +1,6 @@
 package com.fzdkx.task;
 
 import com.fzdkx.entity.Order;
-import com.fzdkx.mapper.OrderDetailMapper;
 import com.fzdkx.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +21,7 @@ public class OrderTask {
     @Resource
     private OrderMapper orderMapper;
 
-    // 每隔一分钟，查看订单超时未支付
+    // 每隔一分钟，查看订单是否超时未支付
     @Scheduled(cron = "0 * * * * ?")
     public void paymentTimout() {
         LocalDateTime now = LocalDateTime.now();
@@ -46,7 +45,7 @@ public class OrderTask {
     }
 
 
-    // 每天打烊后一小时，查看是否有订单孩子配送
+    // 每天打烊后一小时，查看是否有订单还在配送
     @Scheduled(cron = "0 0 1 * * ?")
     public void completeDelivery() {
         LocalDateTime now = LocalDateTime.now();

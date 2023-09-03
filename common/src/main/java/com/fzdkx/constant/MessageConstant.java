@@ -23,4 +23,5 @@ public class MessageConstant {
     public static final String NOT_DATA_ERROR = "暂无数据";
     public static final String PARAM_IS_ERROR = "参数错误";
     public static final String DELETE_IS_NO = "不能删除";
+    public static final String ADDRESS_ERROR = "收货地址不在配送范围";
 }

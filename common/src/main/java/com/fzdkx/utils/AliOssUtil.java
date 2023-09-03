@@ -65,6 +65,7 @@ public class AliOssUtil {
 
         log.info("文件上传到:{}", stringBuilder.toString());
 
+        // 返回文件的访问路径
         return stringBuilder.toString();
     }
 }
